@@ -1,6 +1,7 @@
 import "./globals.css";
 import ThemeProvider from "@/components/theme/ThemeProvider";
 import UploadProvider from "@/components/providers/UploadProvider";
+import InstallPrompt from "@/components/organisms/InstallPrompt/InstallPrompt";
 
 export const metadata = {
   title: "Método: BN — Nutrição",
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
       <body>
         <ThemeProvider>
           <UploadProvider>{children}</UploadProvider>
+          <InstallPrompt />
         </ThemeProvider>
       </body>
     </html>
