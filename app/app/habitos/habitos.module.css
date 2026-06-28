@@ -204,3 +204,47 @@
   flex-direction: column;
   gap: var(--space-3);
 }
+
+/* digitar ml de água manualmente */
+.mlRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+.mlInput {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-overlay);
+  color: var(--text-high);
+  font-size: var(--fs-sm);
+  outline: none;
+}
+.mlInput:focus {
+  border-color: var(--accent);
+}
+.mlUnit {
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+}
+.mlAdd {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--gradient-accent);
+  color: #04110b;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+.mlAdd:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

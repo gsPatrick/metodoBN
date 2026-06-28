@@ -136,7 +136,7 @@ export default function PatientShell({ active, title, subtitle, headerRight, fil
             type: "image",
             attachmentUrl: cam.src,
             attachmentName: "refeicao.jpg",
-            body: `Comi: ${cam.meal}`,
+            body: `Olá, Nutricionista! 👋 Acabei de consumir: ${cam.meal}. Segue a foto 📸`,
           });
         }
         // marca a refeição como consumida (todos os itens)

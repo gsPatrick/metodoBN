@@ -16,6 +16,7 @@ export default function HabitosPage() {
   const [pid, setPid] = useState(null);
   const [goal, setGoal] = useState(WATER_GOAL_ML);
   const [h, setH] = useState(null); // null = carregando
+  const [mlInput, setMlInput] = useState(""); // ml digitados manualmente
 
   useEffect(() => {
     let active = true;
@@ -155,6 +156,37 @@ export default function HabitosPage() {
               <span className={styles.containerMl}>+{c.ml} ml</span>
             </button>
           ))}
+        </div>
+
+        {/* digitar a quantidade exata em ml */}
+        <div className={styles.mlRow}>
+          <input
+            className={styles.mlInput}
+            type="number"
+            inputMode="numeric"
+            min="0"
+            value={mlInput}
+            placeholder="Quanto você bebeu?"
+            onChange={(e) => setMlInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && Number(mlInput) > 0) {
+                update({ agua: h.agua + Math.round(Number(mlInput)) });
+                setMlInput("");
+              }
+            }}
+          />
+          <span className={styles.mlUnit}>ml</span>
+          <button
+            type="button"
+            className={styles.mlAdd}
+            disabled={!(Number(mlInput) > 0)}
+            onClick={() => {
+              update({ agua: h.agua + Math.round(Number(mlInput)) });
+              setMlInput("");
+            }}
+          >
+            <Icon name="plus" size={16} /> Adicionar
+          </button>
         </div>
 
         <div className={styles.metaRow}>
