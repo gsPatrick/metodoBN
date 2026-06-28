@@ -731,3 +731,30 @@
   flex-shrink: 0;
   color: var(--accent);
 }
+
+/* mapa: card/botão compactos em telas pequenas (iPhone mini/SE/16) */
+@media (max-width: 560px) {
+  .navCard {
+    gap: var(--space-1);
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  }
+  .navCard .navTo {
+    display: none;
+  }
+  .navCard .navStore {
+    font-size: var(--fs-md);
+  }
+  .navCard .navMeta {
+    margin-bottom: 0;
+    font-size: var(--fs-xs);
+  }
+  .navCard .startBtn {
+    padding: var(--space-3);
+    font-size: var(--fs-sm);
+    margin-top: var(--space-1);
+  }
+  .navCard .backLink {
+    padding: 2px;
+    font-size: var(--fs-xs);
+  }
+}

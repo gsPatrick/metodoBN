@@ -41,7 +41,7 @@ const NAV = [
   { key: "chat", label: "Chat", icon: "chat", href: "/app/chat" }
 ];
 
-export default function PatientShell({ active, title, subtitle, headerRight, fill = false, children }) {
+export default function PatientShell({ active, title, subtitle, headerRight, fill = false, hideHeader = false, children }) {
   const router = useRouter();
   const [cam, setCam] = useState(null); // null | { phase, src, meal }
   const [plan, setPlan] = useState(null); // { meals:[{id,time,name,foods:[{id}]}] } | { meals: [] }
@@ -174,18 +174,20 @@ export default function PatientShell({ active, title, subtitle, headerRight, fil
 
   return (
     <div className={styles.frame} data-theme={theme}>
-      <header className={`${styles.header} ${hidden ? styles.headerHidden : ""}`}>
-        <div className={styles.headerText}>
-          <span className={styles.headerTitle}>{title}</span>
-          {subtitle && <span className={styles.headerSub}>{subtitle}</span>}
-        </div>
-        {headerRight || (
-          <button type="button" className={styles.bell} aria-label="Notificações">
-            <Icon name="bell" size={20} />
-            <span className={styles.bellDot} />
-          </button>
-        )}
-      </header>
+      {!hideHeader && (
+        <header className={`${styles.header} ${hidden ? styles.headerHidden : ""}`}>
+          <div className={styles.headerText}>
+            <span className={styles.headerTitle}>{title}</span>
+            {subtitle && <span className={styles.headerSub}>{subtitle}</span>}
+          </div>
+          {headerRight || (
+            <button type="button" className={styles.bell} aria-label="Notificações">
+              <Icon name="bell" size={20} />
+              <span className={styles.bellDot} />
+            </button>
+          )}
+        </header>
+      )}
 
       <main className={`${styles.content} ${fill ? styles.contentFill : ""}`}>{children}</main>
 

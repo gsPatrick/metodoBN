@@ -177,6 +177,41 @@ html {
   text-rendering: optimizeLegibility;
 }
 
+/* ===== Toque/feel nativo ===== */
+html,
+body {
+  overscroll-behavior: none; /* sem rubber-band / pull-to-refresh do navegador */
+}
+* {
+  -webkit-tap-highlight-color: transparent; /* sem flash azul ao tocar */
+}
+button,
+a,
+[role="button"],
+label {
+  touch-action: manipulation; /* sem delay de 300ms / sem zoom por double-tap */
+}
+button,
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* inputs nunca dão zoom no iOS (fonte >= 16px) e mantêm seleção */
+input,
+textarea,
+select {
+  -webkit-user-select: text;
+  user-select: text;
+}
+@media (max-width: 768px) {
+  /* iOS dá zoom ao focar input com fonte < 16px — evita o "pulo" */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
 [data-theme="light"] {
   color-scheme: light;
 }

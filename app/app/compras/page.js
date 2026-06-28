@@ -342,7 +342,7 @@ export default function ComprasPage() {
     phase === "intro" ? "Antes de ir ao mercado" : phase === "map" ? "A caminho do mercado" : phase === "done" ? "Quase lá!" : `${boughtCount}/${total} no carrinho`;
 
   return (
-    <PatientShell active="compras" title="Lista de compras" subtitle={subtitle} fill={phase === "map"}>
+    <PatientShell active="compras" title="Lista de compras" subtitle={subtitle} fill={phase === "map"} hideHeader={phase === "map"}>
       {/* ===== Intro ===== */}
       {phase === "intro" && (
         <div className={styles.intro}>
