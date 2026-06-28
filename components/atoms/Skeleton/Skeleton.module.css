@@ -1,0 +1,29 @@
+.sk {
+  display: block;
+  width: var(--sk-w, 100%);
+  height: var(--sk-h, 16px);
+  border-radius: var(--sk-r, var(--radius-sm));
+  background: linear-gradient(
+    100deg,
+    var(--surface-overlay) 30%,
+    var(--surface-elevated) 50%,
+    var(--surface-overlay) 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk {
+    animation: none;
+  }
+}

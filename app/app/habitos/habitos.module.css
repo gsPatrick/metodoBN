@@ -1,0 +1,206 @@
+.scoreCard {
+  margin-bottom: var(--space-5);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.scoreHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+.scoreTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+.streak {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.habit {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-bottom: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-elevated);
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.habitOn {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.habitCol {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+  cursor: default;
+}
+.habitIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-overlay);
+  color: var(--accent);
+}
+.habitOn .habitIcon {
+  background: var(--surface-elevated);
+}
+.habitText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.habitTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+.habitSub {
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+}
+.check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  color: #fff;
+}
+.habitOn .check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.waterHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.clearBtn {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-low);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.waterBar {
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-overlay);
+  overflow: hidden;
+}
+.waterFill {
+  display: block;
+  height: 100%;
+  width: var(--w);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, #38bdf8, var(--accent));
+  transition: width var(--dur-base) var(--ease-out);
+}
+.containers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+.containerBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-overlay);
+  color: var(--accent);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.containerBtn:active {
+  transform: scale(0.95);
+}
+.containerLabel {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+.containerMl {
+  font-size: 10px;
+  color: var(--text-low);
+}
+.metaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+.metaLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+}
+.metaStep {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.stepBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-overlay);
+  color: var(--text-high);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.metaVal {
+  min-width: 96px;
+  text-align: center;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-high);
+}
+
+/* skeletons de carregamento */
+.loadStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

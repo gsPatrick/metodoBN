@@ -1,0 +1,667 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-6), 3vw, var(--space-10));
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===== Hero ===== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  padding: clamp(var(--space-6), 3.5vw, var(--space-10));
+  background:
+    radial-gradient(90% 130% at 100% 0%, rgba(52, 211, 153, 0.16), transparent 55%),
+    var(--gradient-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-md), var(--inset-hairline);
+  animation: fadeUp 0.5s var(--ease-out) both;
+}
+
+.heroText {
+  position: relative;
+  z-index: 2;
+  max-width: 60%;
+}
+
+.greeting {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  color: var(--text-high);
+  line-height: 1.1;
+}
+
+.greeting em {
+  font-style: normal;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.heroSub {
+  margin-top: var(--space-2);
+  font-size: var(--fs-md);
+  color: var(--text-medium);
+  line-height: 1.5;
+}
+
+/* slot opcional de imagem do hero */
+.heroImage {
+  position: absolute;
+  right: clamp(var(--space-4), 3vw, var(--space-10));
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(120px, 16vw, 190px);
+  height: clamp(120px, 16vw, 190px);
+  object-fit: contain;
+  z-index: 2;
+}
+
+/* frutinhas decorativas no canto direito (sem fundo) */
+.heroFruits {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.hf {
+  position: absolute;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+}
+/* posições em "W": ponta1(cima) ponta2(baixo) ponta3(cima) ponta4(baixo) [ponta5 vazia] */
+.hf1 {
+  /* morango — ponta 1 (cima, esquerda) */
+  top: 12%;
+  right: 31%;
+}
+.hf4 {
+  /* banana — ponta 2 (baixo) */
+  top: 48%;
+  right: 22%;
+}
+.hf2 {
+  /* laranja — ponta 3 (cima, meio) */
+  top: 12%;
+  right: 13%;
+}
+.hf3 {
+  /* maçã — ponta 4 (baixo) */
+  top: 48%;
+  right: 4%;
+}
+
+/* gradiente colorido bem no finalzinho (cores das frutas) */
+/* gradiente horizontal (esq -> dir) começando após o texto, na área das frutas */
+.heroGlow {
+  position: absolute;
+  left: 48%;
+  right: 0;
+  top: 8%;
+  height: 66%;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, #ef5e54, #f59740, #f4cb4d, #6fbf73, #8f7fd6);
+  opacity: 0.28;
+  filter: blur(30px);
+}
+
+/* ===== CTA Cadastrar paciente ===== */
+.cta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: clamp(var(--space-5), 2.5vw, var(--space-6));
+  border-radius: var(--radius-lg);
+  background: var(--gradient-accent);
+  box-shadow: var(--shadow-accent);
+  text-decoration: none;
+  color: #ffffff;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-fast) var(--ease-out);
+  animation: fadeUp 0.5s var(--ease-out) 0.06s both;
+}
+
+.cta:active {
+  transform: scale(0.99);
+}
+
+.ctaIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.ctaFruit {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
+.ctaBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ctaTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+}
+
+.ctaSub {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ctaArrow {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.ctaFruitBg {
+  position: absolute;
+  right: -10px;
+  top: -14px;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* ===== Colunas ===== */
+.columns {
+  /* Teto compartilhado: as duas colunas crescem juntas até aqui e então rolam por dentro. */
+  --card-max: clamp(380px, 64vh, 620px);
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  gap: var(--space-6);
+  align-items: stretch;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+  max-height: var(--card-max);
+}
+
+/* Conversas: estica para acompanhar a altura da coluna esquerda, até o teto; depois rola. */
+.cardChat.cardChat {
+  display: flex;
+  flex-direction: column;
+  max-height: var(--card-max);
+  overflow: hidden;
+}
+
+/* Pacientes: preenche o espaço restante da coluna esquerda; a lista rola por dentro. */
+.cardPatients.cardPatients {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.panelTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+
+.panelLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-contrast);
+  cursor: pointer;
+}
+
+/* botão setinha (bandeja) para abrir/fechar o carrossel */
+.trayBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: var(--text-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.trayBtn:active {
+  transform: scale(0.92);
+}
+.trayIcon {
+  transition: transform var(--dur-base) var(--ease-out);
+  transform: rotate(-90deg);
+}
+.trayBtn[aria-expanded="false"] .trayIcon {
+  transform: rotate(90deg);
+}
+
+/* animação de abrir/fechar do carrossel (grid-rows 1fr <-> 0fr) */
+.carouselWrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--dur-slow) var(--ease-out);
+}
+.carouselClosed {
+  grid-template-rows: 0fr;
+}
+.carouselInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* lista de pacientes — scroll interno para não crescer sem limite */
+.list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-right: calc(-1 * var(--space-2));
+  padding-right: var(--space-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-overlay) transparent;
+}
+.list::-webkit-scrollbar {
+  width: 6px;
+}
+.list::-webkit-scrollbar-thumb {
+  background: var(--surface-overlay);
+  border-radius: 999px;
+}
+
+.pRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.pRow:active {
+  background: var(--surface-overlay);
+}
+
+.pRowActive {
+  background: var(--accent-soft);
+}
+
+.pBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.pName {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-high);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pSub {
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+}
+
+.pTrailing {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  color: var(--text-low);
+}
+
+.statusOn {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--accent);
+}
+
+.statusOff {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-low);
+}
+
+/* ===== Conversas ===== */
+.carousel {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 60px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  scroll-snap-align: start;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chipAvatar {
+  position: relative;
+  border-radius: 50%;
+  padding: 2px;
+  border: 2px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.chipActive .chipAvatar {
+  border-color: var(--accent);
+}
+
+.chipUnread {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--danger-strong);
+  color: #fff;
+  font-size: 10px;
+  font-weight: var(--fw-bold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.chipPin {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.chipName {
+  font-size: var(--fs-xs);
+  color: var(--text-medium);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chipActive .chipName {
+  color: var(--text-high);
+  font-weight: var(--fw-semibold);
+}
+
+.convo {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-4);
+  animation: fadeIn 0.3s var(--ease-out);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.convoHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.convoName {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-high);
+}
+
+.convoStatus {
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  font-weight: var(--fw-medium);
+}
+
+.pinBtn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-low);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.pinBtnActive {
+  color: var(--accent);
+  border-color: var(--accent-soft-strong);
+  background: var(--accent-soft);
+}
+
+.msgs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  flex: 1;
+  min-height: 120px;
+}
+
+.msg {
+  max-width: 82%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  border-radius: var(--radius-md);
+}
+
+.msgThem {
+  align-self: flex-start;
+  background: var(--surface-overlay);
+  color: var(--text-high);
+  border-bottom-left-radius: var(--radius-xs);
+}
+
+.msgMe {
+  align-self: flex-end;
+  background: var(--accent-soft-strong);
+  color: var(--text-high);
+  border-bottom-right-radius: var(--radius-xs);
+}
+
+.chatInput {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+
+.chatInput input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-high);
+  font-size: var(--fs-sm);
+}
+.chatInput input::placeholder {
+  color: var(--text-low);
+}
+
+.sendBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.sendBtn:active {
+  transform: scale(0.92);
+}
+
+/* ===== Keyframes ===== */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(4deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .heroText {
+    max-width: 100%;
+  }
+  .heroImage {
+    display: none;
+  }
+  .columns {
+    grid-template-columns: 1fr;
+  }
+  /* cards aproveitam a altura vertical da tela no celular */
+  .cardPatients.cardPatients {
+    flex: none;
+    min-height: 78vh;
+  }
+  .list {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+  }
+  /* chat ocupa praticamente a tela cheia */
+  .cardChat.cardChat {
+    min-height: 90vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero,
+  .cta,
+  .convo {
+    animation: none;
+  }
+}
+
+/* Botão de ação dos empty states (Tentar de novo / Cadastrar) */
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-overlay);
+  color: var(--accent-contrast);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.retry:active {
+  transform: scale(0.97);
+}

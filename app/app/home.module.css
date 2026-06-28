@@ -1,0 +1,394 @@
+.greet {
+  margin-bottom: var(--space-5);
+}
+.greetTitle {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  color: var(--text-high);
+}
+.greetTitle em {
+  font-style: normal;
+  color: var(--accent);
+}
+.greetSub {
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+  margin-top: 2px;
+}
+
+/* ===== Card de pontuação (gamificação) ===== */
+.scoreCard {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-elevated);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.streak {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.habitChips {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+.hchip {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-overlay);
+  color: var(--text-low);
+  font-size: 11px;
+  font-weight: var(--fw-semibold);
+}
+.hchipOn {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft-strong);
+  color: var(--accent-contrast);
+}
+
+/* ===== Carrossel de banners ===== */
+.carousel {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  margin: 0 calc(-1 * var(--space-5));
+  padding: 0 var(--space-5) var(--space-1);
+  scrollbar-width: none;
+}
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+.banner {
+  position: relative;
+  flex: 0 0 86%;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-height: 150px;
+  padding: var(--space-5);
+  border: none;
+  border-radius: var(--radius-xl);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  color: #fff;
+  -webkit-tap-highlight-color: transparent;
+}
+.gradA {
+  background: radial-gradient(120% 140% at 0% 0%, rgba(13, 148, 136, 0.55), transparent 55%), var(--gradient-accent);
+}
+.gradB {
+  background: linear-gradient(135deg, #6d5ef0, #9b8cff);
+}
+.gradC {
+  background: linear-gradient(135deg, #f59e0b, #fbbf57);
+}
+.bannerFruit {
+  position: absolute;
+  right: -6px;
+  bottom: -10px;
+  opacity: 0.95;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+}
+.bannerTag {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.85);
+}
+.bannerTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  line-height: 1.2;
+  max-width: 70%;
+}
+.bannerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: auto;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.9);
+  color: #1a1a1a;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+}
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: var(--space-3) 0 var(--space-5);
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  transition: width var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.dotOn {
+  width: 20px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+
+/* ===== Banner destaque ===== */
+.feature {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  border: none;
+  border-radius: var(--radius-xl);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.featureText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.featureTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+.featureSub {
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+}
+.featureBtn {
+  flex-shrink: 0;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
+  background: var(--gradient-accent);
+  color: #fff;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+}
+
+/* ===== Atalhos ===== */
+.secLabel {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-low);
+}
+.avatarBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  color: #fff;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* tabela nutricional */
+.tabela {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--accent-soft-strong);
+  background: var(--accent-soft);
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.tabela > svg:last-child {
+  color: var(--accent-contrast);
+  flex-shrink: 0;
+}
+.tabelaIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: var(--accent);
+}
+.tabelaText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tabelaTitle {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+.tabelaSub {
+  font-size: var(--fs-xs);
+  color: var(--text-medium);
+}
+
+/* dica do dia */
+.tip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-soft-strong);
+}
+.tipIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: var(--accent);
+}
+.tipText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tipLabel {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-contrast);
+}
+.tipBody {
+  font-size: var(--fs-sm);
+  color: var(--text-high);
+  line-height: 1.4;
+}
+
+/* receitas */
+.secRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+.seeAll {
+  border: none;
+  background: transparent;
+  color: var(--accent-contrast);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+.recipes {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--space-5));
+  padding: 0 var(--space-5) var(--space-1);
+  scrollbar-width: none;
+}
+.recipes::-webkit-scrollbar {
+  display: none;
+}
+.recipe {
+  flex: 0 0 150px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-elevated);
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.recipeIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.recipeName {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+  line-height: 1.25;
+}
+.recipeYield {
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+}
+
+/* estado vazio das receitas (sem plano liberado) */
+.recipesEmpty {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface-overlay);
+  border: 1px dashed var(--border-strong);
+  color: var(--text-low);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+}
+.recipesEmpty svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}

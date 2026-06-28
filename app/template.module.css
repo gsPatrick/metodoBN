@@ -1,0 +1,94 @@
+/* overlay da transição (cobre a tela, fruta dá um "pop" e some revelando a página) */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-base);
+  pointer-events: none;
+  animation: ovOut 1.3s var(--ease-out) forwards;
+}
+
+.ring {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  animation: ringPulse 1.3s var(--ease-out) both;
+}
+
+.fruit {
+  position: relative;
+  animation: fruitPop 1.3s var(--ease-out) both;
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.35));
+}
+
+/* a página revela com fade (só opacidade — não quebra position:fixed da sidebar) */
+.page {
+  animation: pageIn 0.55s var(--ease-out) 0.72s both;
+}
+
+@keyframes ovOut {
+  0%,
+  48% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fruitPop {
+  0% {
+    transform: scale(0.3) translateY(26px) rotate(-16deg);
+    opacity: 0;
+  }
+  38% {
+    transform: scale(1.12) translateY(0) rotate(6deg);
+    opacity: 1;
+  }
+  62% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+
+@keyframes ringPulse {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    display: none;
+  }
+  .page {
+    animation: none;
+  }
+}

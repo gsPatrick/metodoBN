@@ -1,0 +1,106 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.05em;
+}
+
+.spinner {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading .content {
+  visibility: hidden;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* ===== Sizes (touch-friendly) ===== */
+.size_sm {
+  min-height: 40px;
+  padding: 0 var(--space-5);
+  font-size: var(--fs-sm);
+}
+
+.size_md {
+  min-height: 48px;
+  padding: 0 var(--space-6);
+  font-size: var(--fs-md);
+}
+
+.size_lg {
+  min-height: 56px;
+  padding: 0 var(--space-10);
+  font-size: var(--fs-lg);
+}
+
+/* ===== Variants (sem mudança de cor no hover — só feedback no :active) ===== */
+.variant_primary {
+  background: var(--gradient-accent);
+  color: #ffffff;
+  box-shadow: var(--shadow-accent), var(--inset-hairline);
+}
+
+.variant_secondary {
+  background: var(--surface-elevated);
+  color: var(--text-high);
+  border-color: var(--border);
+  box-shadow: var(--inset-hairline);
+}
+
+.variant_ghost {
+  background: transparent;
+  color: var(--text-high);
+}
+
+.variant_outline {
+  background: transparent;
+  color: var(--accent-contrast);
+  border-color: var(--accent);
+}
+
+.variant_danger {
+  background: var(--danger-strong);
+  color: #ffffff;
+  box-shadow: 0 12px 30px rgba(239, 68, 68, 0.28), var(--inset-hairline);
+}

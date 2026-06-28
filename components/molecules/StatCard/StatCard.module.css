@@ -1,0 +1,114 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow: hidden;
+}
+
+.accent {
+  border-color: var(--accent-soft-strong);
+  background: linear-gradient(160deg, rgba(52, 211, 153, 0.1) 0%, var(--surface) 60%);
+}
+
+.accent::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 60%;
+  height: 140%;
+  background: var(--gradient-accent-glow);
+  filter: blur(40px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  z-index: 1;
+}
+
+.label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-medium);
+  letter-spacing: -0.01em;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent-contrast);
+  font-size: 1.15rem;
+}
+
+.icon svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.valueRow {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  z-index: 1;
+}
+
+.value {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-high);
+  font-variant-numeric: tabular-nums;
+}
+
+.unit {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-low);
+}
+
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  padding: 3px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+}
+
+.trend svg {
+  width: 13px;
+  height: 13px;
+}
+
+.trendUp {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.trendDown {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.helper {
+  position: relative;
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+  z-index: 1;
+}

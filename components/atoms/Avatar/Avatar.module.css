@@ -1,0 +1,69 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--gradient-surface);
+  border: 1px solid var(--border);
+  color: var(--accent-contrast);
+  font-weight: var(--fw-semibold);
+  box-shadow: var(--inset-hairline);
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.initials {
+  letter-spacing: 0.02em;
+}
+
+.size_sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--fs-xs);
+}
+
+.size_md {
+  width: 44px;
+  height: 44px;
+  font-size: var(--fs-sm);
+}
+
+.size_lg {
+  width: 64px;
+  height: 64px;
+  font-size: var(--fs-lg);
+}
+
+.status {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 28%;
+  height: 28%;
+  min-width: 9px;
+  min-height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-base);
+}
+
+.status_online {
+  background: var(--success);
+}
+
+.status_offline {
+  background: var(--text-low);
+}
+
+.status_busy {
+  background: var(--danger);
+}

@@ -1,0 +1,90 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  animation: fade var(--dur-base) var(--ease-out);
+}
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 360px;
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xl);
+}
+.title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+.hint {
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+  margin-top: calc(-1 * var(--space-2));
+}
+.box {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-overlay);
+  cursor: grab;
+  touch-action: none;
+}
+.box:active {
+  cursor: grabbing;
+}
+.img {
+  position: absolute;
+  left: var(--l);
+  top: var(--t);
+  width: var(--w);
+  height: var(--h);
+  max-width: none;
+  user-select: none;
+  pointer-events: none;
+}
+.mask {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+.zoomRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+.zoom {
+  flex: 1;
+  accent-color: var(--accent);
+}
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  width: 100%;
+  justify-content: space-between;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

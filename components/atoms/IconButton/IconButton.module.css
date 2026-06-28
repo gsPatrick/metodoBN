@@ -1,0 +1,57 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-high);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+
+.iconButton:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.iconButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Alvos de toque (mínimo 40-48px) */
+.size_sm {
+  width: 40px;
+  height: 40px;
+  font-size: 1rem;
+}
+
+.size_md {
+  width: 44px;
+  height: 44px;
+  font-size: 1.15rem;
+}
+
+.size_lg {
+  width: 52px;
+  height: 52px;
+  font-size: 1.3rem;
+}
+
+.variant_ghost {
+  background: transparent;
+  color: var(--text-high);
+}
+
+.variant_solid {
+  background: var(--surface-elevated);
+  border-color: var(--border);
+  color: var(--text-high);
+}
+
+.variant_accent {
+  background: var(--accent-soft);
+  color: var(--accent-contrast);
+  border-color: var(--accent-soft-strong);
+}

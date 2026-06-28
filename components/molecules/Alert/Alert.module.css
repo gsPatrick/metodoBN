@@ -1,0 +1,112 @@
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--inset-hairline);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-high);
+  letter-spacing: -0.01em;
+}
+
+.message {
+  font-size: var(--fs-sm);
+  color: var(--text-medium);
+}
+
+.action {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-low);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-high);
+}
+
+.variant_success {
+  border-color: var(--accent-soft-strong);
+  background: linear-gradient(180deg, var(--success-soft), var(--surface));
+}
+
+.variant_success .icon {
+  color: var(--success);
+}
+
+.variant_error {
+  border-color: var(--danger-soft);
+  background: linear-gradient(180deg, var(--danger-soft), var(--surface));
+}
+
+.variant_error .icon {
+  color: var(--danger);
+}
+
+.variant_warning {
+  border-color: var(--warning-soft);
+  background: linear-gradient(180deg, var(--warning-soft), var(--surface));
+}
+
+.variant_warning .icon {
+  color: var(--warning);
+}
+
+.variant_info {
+  border-color: var(--info-soft);
+  background: linear-gradient(180deg, var(--info-soft), var(--surface));
+}
+
+.variant_info .icon {
+  color: var(--info);
+}

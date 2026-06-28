@@ -1,0 +1,280 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg-base);
+}
+
+/* ===== Lado esquerdo — visual de nutrição (60%) ===== */
+.media {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(var(--space-8), 4vw, var(--space-16));
+  background: linear-gradient(160deg, #14161b 0%, #0c0d10 100%);
+}
+
+/* Foto 4K do usuário (cobre o painel) */
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Placeholder enquanto não há foto */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.16);
+  background:
+    radial-gradient(70% 50% at 30% 25%, rgba(52, 211, 153, 0.1), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 14px, transparent 14px 28px);
+}
+
+/* Scrim para legibilidade da logo (topo) e da frase (base) */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(8, 9, 11, 0.5) 0%, rgba(8, 9, 11, 0) 26%),
+    linear-gradient(0deg, rgba(8, 9, 11, 0.82) 0%, rgba(8, 9, 11, 0) 46%);
+}
+
+.mediaTop {
+  position: relative;
+  z-index: 2;
+}
+
+/* Frase de impacto — canto inferior esquerdo */
+.quote {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  max-width: 560px;
+  animation: fadeUp 0.7s var(--ease-out) both;
+}
+
+.quoteText {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text-high);
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* ===== Lado direito — formulário (40%) ===== */
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(var(--space-6), 4vw, var(--space-12));
+  background: var(--bg-base);
+  border-left: 1px solid var(--border-subtle);
+}
+
+.formWrap {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  animation: fadeUp 0.6s var(--ease-out) both;
+}
+
+.brandMobile {
+  display: none;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  color: var(--text-high);
+}
+
+.subtitle {
+  font-size: var(--fs-md);
+  color: var(--text-medium);
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.rowBetween {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--accent-contrast);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.link:active {
+  opacity: 0.65;
+}
+
+.footerNote {
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+  line-height: 1.5;
+}
+
+.footerNote strong {
+  color: var(--text-medium);
+  font-weight: var(--fw-semibold);
+}
+
+.legal {
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+}
+
+/* troca login <-> esqueci senha */
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  animation: swapIn 0.35s var(--ease-out) both;
+}
+
+.backRow {
+  display: flex;
+  align-items: center;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: none;
+  padding: var(--space-2) 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-medium);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== Keyframes ===== */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes swapIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(40px, 30px) scale(1.12);
+  }
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 960px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .media {
+    min-height: 34vh;
+    padding: clamp(var(--space-6), 6vw, var(--space-10));
+  }
+  .quoteText {
+    font-size: var(--fs-xl);
+  }
+  .panel {
+    border-left: none;
+    border-top: 1px solid var(--border-subtle);
+  }
+}
+
+@media (max-width: 560px) {
+  .media {
+    display: none;
+  }
+  .brandMobile {
+    display: flex;
+    justify-content: center;
+  }
+  .panel {
+    align-items: flex-start;
+    padding-top: var(--space-10);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb1,
+  .orb2,
+  .chip,
+  .formWrap,
+  .view {
+    animation: none;
+  }
+}

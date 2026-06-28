@@ -1,0 +1,148 @@
+.toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: min(380px, calc(100vw - var(--space-8)));
+  padding: var(--space-4);
+  overflow: hidden;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg), var(--inset-hairline);
+}
+
+.entering {
+  animation: toastIn var(--dur-slow) var(--ease-out);
+}
+
+.leaving {
+  animation: toastOut 200ms var(--ease-in-out) forwards;
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-high);
+  letter-spacing: -0.01em;
+}
+
+.description {
+  font-size: var(--fs-sm);
+  color: var(--text-medium);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-low);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.close svg {
+  width: 13px;
+  height: 13px;
+}
+
+.close:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-high);
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  transform-origin: left;
+  animation-name: shrink;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.variant_success .icon {
+  color: var(--success);
+}
+
+.variant_success .progress {
+  background: var(--accent);
+}
+
+.variant_error .icon {
+  color: var(--danger);
+}
+
+.variant_error .progress {
+  background: var(--danger);
+}
+
+.variant_info .icon {
+  color: var(--info);
+}
+
+.variant_info .progress {
+  background: var(--info);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateX(16px) scale(0.96);
+  }
+}
+
+@keyframes shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entering,
+  .leaving {
+    animation: none;
+  }
+}

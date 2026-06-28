@@ -1,0 +1,51 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-5);
+}
+.compact {
+  padding: var(--space-6) var(--space-4);
+}
+.art {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  margin-bottom: var(--space-1);
+}
+.compact .art {
+  width: 64px;
+  height: 64px;
+}
+.artError {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+.compact .title {
+  font-size: var(--fs-md);
+}
+.message {
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+  max-width: 380px;
+  line-height: 1.5;
+}
+.action {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}

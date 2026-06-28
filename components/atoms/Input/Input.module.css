@@ -1,0 +1,122 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-high);
+  box-shadow: var(--shadow-sm), var(--inset-hairline);
+  transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
+}
+
+.wrap:hover {
+  border-color: var(--border);
+}
+
+.wrap:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 4px var(--accent-soft), var(--shadow-sm);
+}
+
+.input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-high);
+}
+
+.input::placeholder {
+  color: var(--text-low);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.wrap:has(.input:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.iconLeft {
+  color: var(--accent);
+}
+
+.iconRight {
+  color: var(--text-low);
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-right: calc(-1 * var(--space-1));
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-low);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+
+.toggle:hover {
+  color: var(--text-medium);
+  background: var(--surface-overlay);
+}
+
+.toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.size_sm {
+  padding: 0 var(--space-4);
+  height: 46px;
+  font-size: var(--fs-sm);
+}
+
+.size_md {
+  padding: 0 var(--space-5);
+  height: 54px;
+  font-size: var(--fs-md);
+}
+
+.size_lg {
+  padding: 0 var(--space-6);
+  height: 62px;
+  font-size: var(--fs-lg);
+}
+
+.invalid {
+  border-color: var(--danger);
+}
+
+.invalid:focus-within {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px var(--danger-soft), var(--shadow-sm);
+}
+
+.warn {
+  border-color: var(--warning);
+}
+
+.warn:focus-within {
+  border-color: var(--warning);
+  box-shadow: 0 0 0 4px var(--warning-soft), var(--shadow-sm);
+}

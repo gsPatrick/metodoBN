@@ -1,0 +1,138 @@
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--surface-overlay);
+  border: 1px solid var(--border-subtle);
+}
+
+/* barra + legenda agrupadas (ficam logo abaixo do header de kcal) */
+.barBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ---- barra de macros ---- */
+.macroBar {
+  display: flex;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: var(--surface);
+}
+.segC {
+  width: var(--w);
+  flex-shrink: 0;
+  background: #f59e0b;
+}
+.segP {
+  width: var(--w);
+  flex-shrink: 0;
+  background: var(--accent);
+}
+.segL {
+  width: var(--w);
+  flex-shrink: 0;
+  background: #a78bfa;
+}
+
+/* ---- kcal (header) ---- */
+.kcalRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.kcalIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: rgba(245, 158, 11, 0.14);
+  color: #f59e0b;
+}
+.kcalNum {
+  font-size: var(--fs-3xl, 2rem);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.kcalUnit {
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+  align-self: flex-end;
+  padding-bottom: 3px;
+}
+
+/* ---- macros (3 colunas com divisórias), logo abaixo da barra ---- */
+.macroLegend {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 var(--space-4);
+  border-left: 1px solid var(--border-subtle);
+  min-width: 0;
+}
+.legend:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+.legendTop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.legendDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot_c {
+  background: #f59e0b;
+}
+.dot_p {
+  background: var(--accent);
+}
+.dot_l {
+  background: #a78bfa;
+}
+.legendLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.legendVal {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+  line-height: 1;
+}
+.legendPct {
+  font-weight: var(--fw-medium);
+  color: var(--text-low);
+}
+
+@media (max-width: 460px) {
+  .legend {
+    padding: 0 var(--space-2);
+  }
+  .legendVal {
+    font-size: var(--fs-sm);
+  }
+}
