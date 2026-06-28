@@ -16,6 +16,7 @@ export default function AddFoodSheet({ mealName, onAdd, onClose }) {
   const [loading, setLoading] = useState(false);
   const [sel, setSel] = useState(null); // { name, per100: {kcal,c,p,l} }
   const [grams, setGrams] = useState(100);
+  const [measLabel, setMeasLabel] = useState(null); // medida caseira selecionada (por label)
 
   useEffect(() => {
     const term = q.trim();
@@ -53,6 +54,7 @@ export default function AddFoodSheet({ mealName, onAdd, onClose }) {
       measures: ms
     });
     setGrams(ms[0] ? Math.round(ms[0].grams) : 100);
+    setMeasLabel(ms[0] ? ms[0].label : null);
   }
 
   function confirm() {
@@ -106,8 +108,11 @@ export default function AddFoodSheet({ mealName, onAdd, onClose }) {
                   <button
                     key={m.label}
                     type="button"
-                    className={`${styles.measChip} ${grams === Math.round(m.grams) ? styles.measChipOn : ""}`}
-                    onClick={() => setGrams(Math.round(m.grams))}
+                    className={`${styles.measChip} ${measLabel === m.label ? styles.measChipOn : ""}`}
+                    onClick={() => {
+                      setGrams(Math.round(m.grams));
+                      setMeasLabel(m.label);
+                    }}
                   >
                     {m.label} <b>{Math.round(m.grams)}g</b>
                   </button>
@@ -115,17 +120,22 @@ export default function AddFoodSheet({ mealName, onAdd, onClose }) {
               </div>
             )}
             <div className={styles.gramsRow}>
-              <button type="button" className={styles.stepBtn} onClick={() => setGrams(Math.max(10, grams - 10))}>
+              <button type="button" className={styles.stepBtn} onClick={() => { setGrams(Math.max(10, grams - 10)); setMeasLabel(null); }}>
                 −
               </button>
               <span className={styles.gramsVal}>{grams} g</span>
-              <button type="button" className={styles.stepBtn} onClick={() => setGrams(grams + 10)}>
+              <button type="button" className={styles.stepBtn} onClick={() => { setGrams(grams + 10); setMeasLabel(null); }}>
                 +
               </button>
             </div>
             <div className={styles.presets}>
               {[50, 100, 150, 200].map((g) => (
-                <button key={g} type="button" className={`${styles.preset} ${grams === g ? styles.presetOn : ""}`} onClick={() => setGrams(g)}>
+                <button
+                  key={g}
+                  type="button"
+                  className={`${styles.preset} ${!measLabel && grams === g ? styles.presetOn : ""}`}
+                  onClick={() => { setGrams(g); setMeasLabel(null); }}
+                >
                   {g}g
                 </button>
               ))}
