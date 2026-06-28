@@ -3,13 +3,29 @@ import ThemeProvider from "@/components/theme/ThemeProvider";
 import UploadProvider from "@/components/providers/UploadProvider";
 
 export const metadata = {
-  title: "Nutri — Design System",
-  description: "Sistema de design premium para plataforma de nutrição."
+  title: "Método: BN — Nutrição",
+  description: "Acompanhamento nutricional com a Nutricionista Beatriz Nascimento.",
+  manifest: "/manifest.webmanifest",
+  applicationName: "Método BN",
+  appleWebApp: {
+    capable: true,
+    title: "Método BN",
+    statusBarStyle: "black"
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" }
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }]
+  }
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover", // usa a tela toda (notch/safe-area) — cara de app nativo
   themeColor: "#0e0f12"
 };
 
