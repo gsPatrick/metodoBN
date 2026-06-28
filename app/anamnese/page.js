@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
 
@@ -113,7 +113,7 @@ function Segment({ options, value, onChange, label }) {
   );
 }
 
-export default function AnamnesePage() {
+function AnamneseInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const readonly = searchParams.get("view") === "1";
@@ -1035,5 +1035,14 @@ function Field({ label, span, children }) {
       <span className={styles.fieldLabel}>{label}</span>
       {children}
     </label>
+  );
+}
+
+// useSearchParams precisa de um boundary de Suspense no build do Next (App Router).
+export default function AnamnesePage() {
+  return (
+    <Suspense fallback={null}>
+      <AnamneseInner />
+    </Suspense>
   );
 }
