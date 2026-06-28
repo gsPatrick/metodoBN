@@ -1,32 +1,32 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Logo from "@/components/atoms/Logo/Logo";
+import { isLoggedIn, getCurrentUser } from "@/lib/api";
 import styles from "./page.module.css";
 
-export default function HomePage() {
+// Porta de entrada do app: decide o destino (login ou home conforme o papel)
+// e mostra um splash enquanto redireciona. É a tela inicial do PWA.
+export default function RootGate() {
+  const router = useRouter();
+
+  useEffect(() => {
+    let dest = "/login";
+    try {
+      if (isLoggedIn()) {
+        const u = getCurrentUser();
+        dest = u && u.role === "patient" ? "/app" : "/dashboard";
+      }
+    } catch {
+      /* sem sessão → login */
+    }
+    router.replace(dest);
+  }, [router]);
+
   return (
-    <main className={styles.main} data-theme="dark">
-      <div className={styles.panel}>
-        <span className={styles.kicker}>Nutri Platform</span>
-        <h1 className={styles.title}>
-          Sistema de design <span className={styles.accent}>premium</span> para
-          nutrição
-        </h1>
-        <p className={styles.subtitle}>
-          A base atômica que sustenta a experiência de nutricionistas e
-          pacientes. Componentes, tokens e padrões prontos para escalar.
-        </p>
-        <Link href="/design-system" className={styles.cta}>
-          Ver design system
-          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path
-              d="M3 8h10M9 4l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </Link>
-      </div>
-    </main>
+    <div className={styles.splash} data-theme="dark">
+      <Logo size="lg" />
+    </div>
   );
 }

@@ -163,7 +163,10 @@ export default function PatientShell({ active, title, subtitle, headerRight, fil
         key={n.key}
         type="button"
         className={`${styles.navItem} ${active === n.key ? styles.navActive : ""}`}
-        onClick={() => router.push(n.href)}
+        onClick={() => {
+          if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(8); // haptic leve (Android)
+          router.push(n.href);
+        }}
         aria-current={active === n.key ? "page" : undefined}
       >
         <Icon name={n.icon} size={22} />

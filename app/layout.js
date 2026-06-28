@@ -26,6 +26,8 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1, // sem pinça/zoom — comportamento de app nativo
+  userScalable: false,
   viewportFit: "cover", // usa a tela toda (notch/safe-area) — cara de app nativo
   interactiveWidget: "resizes-content", // teclado redimensiona o conteúdo (não sobrepõe)
   themeColor: "#0e0f12"
