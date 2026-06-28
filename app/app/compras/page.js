@@ -46,7 +46,7 @@ function osmEmbed(geo, market) {
 }
 
 // Google Maps Embed (mapa com rota a pé, dentro do app)
-const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || "";
+const GMAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || "AIzaSyCfkK9FL13CpC-wNG5NHPpWXSMHYQREZQ0";
 function gmapsDirections(origin, market) {
   return `https://www.google.com/maps/embed/v1/directions?key=${GMAPS_KEY}&origin=${origin.lat},${origin.lon}&destination=${market.lat},${market.lon}&mode=walking&zoom=16&maptype=satellite`;
 }

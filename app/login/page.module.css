@@ -256,16 +256,17 @@
 }
 
 @media (max-width: 560px) {
+  /* mantém a imagem como faixa no topo no celular (em vez de esconder) */
   .media {
-    display: none;
+    min-height: 30vh;
+    padding: clamp(var(--space-5), 6vw, var(--space-8));
   }
-  .brandMobile {
-    display: flex;
-    justify-content: center;
+  .quoteText {
+    font-size: var(--fs-lg);
   }
   .panel {
     align-items: flex-start;
-    padding-top: var(--space-10);
+    padding-top: var(--space-8);
   }
 }
 

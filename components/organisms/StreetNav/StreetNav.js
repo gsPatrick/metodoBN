@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Icon from "@/components/atoms/Icon/Icon";
 import styles from "./StreetNav.module.css";
 
-const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || "";
+const KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || "AIzaSyCfkK9FL13CpC-wNG5NHPpWXSMHYQREZQ0";
 
 // carrega a Maps JavaScript API uma única vez
 let gmapsPromise = null;
