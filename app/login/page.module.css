@@ -163,9 +163,9 @@
 }
 
 .legal {
-  text-align: center;
-  font-size: var(--fs-xs);
-  color: var(--text-low);
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-2);
 }
 
 /* troca login <-> esqueci senha */

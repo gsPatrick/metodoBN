@@ -238,7 +238,9 @@ export default function LoginPage() {
             </div>
           )}
 
-          <p className={styles.legal}>Método: BN</p>
+          <div className={styles.legal}>
+            <Logo size="sm" />
+          </div>
         </div>
       </main>
     </div>

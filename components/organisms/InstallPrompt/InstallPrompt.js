@@ -83,7 +83,7 @@ export default function InstallPrompt() {
       <div className={styles.banner} role="dialog" aria-label="Instalar aplicativo">
         <img className={styles.icon} src="/publico.png" alt="" />
         <span className={styles.text}>
-          <b className={styles.title}>Instalar o Método BN</b>
+          <b className={styles.title}>Instalar aplicativo</b>
           <span className={styles.sub}>Mais rápido, em tela cheia, direto da tela inicial.</span>
         </span>
         <button type="button" className={styles.cta} onClick={install}>

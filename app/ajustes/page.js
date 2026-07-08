@@ -6,6 +6,7 @@ import styles from "./page.module.css";
 
 import AppShell from "@/components/organisms/AppShell/AppShell";
 import Card from "@/components/atoms/Card/Card";
+import Logo from "@/components/atoms/Logo/Logo";
 import Icon from "@/components/atoms/Icon/Icon";
 import Input from "@/components/atoms/Input/Input";
 import Button from "@/components/atoms/Button/Button";
@@ -214,7 +215,9 @@ export default function AjustesPage() {
         <Card elevation="sm" padding="lg">
           <div className={styles.head}>
             <span className={styles.title}>Conta</span>
-            <span className={styles.sub}>Método BN</span>
+            <span className={styles.brandLogo}>
+              <Logo size="sm" />
+            </span>
           </div>
           <div className={styles.accountActions}>
             <Button variant="outline" onClick={logout} iconLeft={<Icon name="logout" size={18} />}>

@@ -21,6 +21,10 @@
   font-size: var(--fs-sm);
   color: var(--text-low);
 }
+.brandLogo {
+  display: inline-flex;
+  margin-top: var(--space-1);
+}
 .label {
   display: block;
   margin-bottom: var(--space-3);
