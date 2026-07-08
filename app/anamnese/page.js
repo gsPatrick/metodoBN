@@ -10,7 +10,7 @@ import Icon from "@/components/atoms/Icon/Icon";
 import Input from "@/components/atoms/Input/Input";
 import Button from "@/components/atoms/Button/Button";
 import FinishFlow from "@/components/molecules/FinishFlow/FinishFlow";
-import { apiPut } from "@/lib/api";
+import { apiPut, apiGet } from "@/lib/api";
 
 const SECTIONS = [
   { key: "geral", title: "Informações gerais", icon: "clipboard", sub: "Identificação e dados gerais do paciente." },
@@ -127,50 +127,73 @@ function AnamneseInner() {
 
   // restaura rascunho salvo (ou pré-preenche do cadastro / anamnese finalizada)
   useEffect(() => {
-    if (readonly) {
+    let active = true;
+
+    async function load() {
+      if (readonly) {
+        if (patientId) {
+          try {
+            const a = await apiGet(`/anamnesis/${patientId}`);
+            if (!active) return;
+            if (a && a.generalInfo && Object.keys(a.generalInfo).length) {
+              setForm(a.generalInfo);
+              setReady(true);
+              return;
+            }
+          } catch {
+            /* tenta fallback local */
+          }
+        }
+        try {
+          const fin = localStorage.getItem("bn_anamnese_final");
+          if (fin) {
+            const d = JSON.parse(fin);
+            if (d.form) setForm(d.form);
+          }
+        } catch {
+          /* ignora */
+        }
+        if (active) setReady(true);
+        return;
+      }
+
       try {
-        const fin = localStorage.getItem("bn_anamnese_final");
-        if (fin) {
-          const d = JSON.parse(fin);
+        const draft = localStorage.getItem("bn_anamnese_draft");
+        if (draft) {
+          const d = JSON.parse(draft);
           if (d.form) setForm(d.form);
+          if (typeof d.index === "number") setIndex(d.index);
+          if (active) setReady(true);
+          return;
         }
       } catch {
         /* ignora */
       }
-      setReady(true);
-      return;
-    }
-    try {
-      const draft = localStorage.getItem("bn_anamnese_draft");
-      if (draft) {
-        const d = JSON.parse(draft);
-        if (d.form) setForm(d.form);
-        if (typeof d.index === "number") setIndex(d.index);
-        setReady(true);
-        return;
+      try {
+        const novo = sessionStorage.getItem("bn_anamnese_patient") || sessionStorage.getItem("bn_novo_paciente");
+        if (novo) {
+          const d = JSON.parse(novo);
+          if (d.patientProfileId) setPatientId((cur) => cur || d.patientProfileId);
+          setForm((p) => ({
+            ...p,
+            nome: d.nome || "",
+            sexo: d.sexo || "",
+            nascimento: d.nascimento || "",
+            email: d.email || "",
+            celular: d.celular || d.telefone || ""
+          }));
+        }
+      } catch {
+        /* ignora */
       }
-    } catch {
-      /* ignora */
+      if (active) setReady(true);
     }
-    try {
-      const novo = sessionStorage.getItem("bn_anamnese_patient") || sessionStorage.getItem("bn_novo_paciente");
-      if (novo) {
-        const d = JSON.parse(novo);
-        if (d.patientProfileId) setPatientId((cur) => cur || d.patientProfileId);
-        setForm((p) => ({
-          ...p,
-          nome: d.nome || "",
-          sexo: d.sexo || "",
-          nascimento: d.nascimento || "",
-          email: d.email || "",
-          celular: d.celular || d.telefone || ""
-        }));
-      }
-    } catch {
-      /* ignora */
-    }
-    setReady(true);
-  }, []);
+
+    load();
+    return () => {
+      active = false;
+    };
+  }, [readonly, patientId]);
 
   // salva automaticamente a cada mudança (etapa + respostas)
   useEffect(() => {
@@ -330,6 +353,18 @@ function AnamneseInner() {
   }
 
   const tituloAnamnese = form.nome && form.nome.trim() ? `Anamnese do(a) paciente: ${form.nome.trim()}` : "Anamnese";
+
+  if (!ready) {
+    return (
+      <AppShell active="anamnese" title="Anamnese">
+        <div className={styles.page}>
+          <Card elevation="sm" padding="lg">
+            <p className={styles.sub}>Carregando anamnese…</p>
+          </Card>
+        </div>
+      </AppShell>
+    );
+  }
 
   if (done) {
     return (

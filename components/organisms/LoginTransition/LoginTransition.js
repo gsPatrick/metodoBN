@@ -52,7 +52,7 @@ export default function LoginTransition({ variant = "nutri", name, onDone, durat
           <Icon name="check" size={30} strokeWidth={2.4} />
         </span>
         <span className={styles.logo}>
-          <Logo size="lg" />
+          <Logo size="lg" showName />
         </span>
         <h1 className={styles.hello}>Bem-vinda{first ? `, ${first}` : ""}</h1>
         <p className={styles.sub}>Abrindo o seu painel…</p>

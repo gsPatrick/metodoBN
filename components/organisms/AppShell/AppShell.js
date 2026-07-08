@@ -111,7 +111,7 @@ export default function AppShell({
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
         <div className={styles.sidebarBrand}>
-          <Logo size="md" />
+          <Logo size="md" showName />
         </div>
 
         <nav className={styles.nav}>
@@ -163,7 +163,7 @@ export default function AppShell({
         <header className={`${styles.header} ${hidden ? styles.headerHidden : ""}`}>
           <span className={styles.title}>{title}</span>
           <span className={styles.brandMobile}>
-            <Logo size="sm" />
+            <Logo size="sm" showName />
           </span>
 
           <div className={styles.headerActions}>

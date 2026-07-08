@@ -26,7 +26,7 @@ export default function RootGate() {
 
   return (
     <div className={styles.splash} data-theme="dark">
-      <Logo size="lg" />
+      <Logo size="lg" showName />
     </div>
   );
 }

@@ -1,34 +1,93 @@
 .logo {
   display: inline-flex;
   align-items: center;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.iconOnly {
   justify-content: center;
   line-height: 0;
-  flex-shrink: 0;
+}
+
+.withName {
+  gap: 0.65em;
 }
 
 .image {
   display: block;
-  width: 100%;
-  height: 100%;
+  flex-shrink: 0;
   object-fit: contain;
 }
 
-.size_sm {
-  width: 32px;
-  height: 32px;
+.size_sm .image {
+  width: 45px;
+  height: 45px;
 }
 
-.size_md {
-  width: 44px;
-  height: 44px;
+.size_md .image {
+  width: 62px;
+  height: 62px;
 }
 
-.size_lg {
-  width: 64px;
-  height: 64px;
+.size_lg .image {
+  width: 90px;
+  height: 90px;
 }
 
-.size_xl {
-  width: 84px;
-  height: 84px;
+.size_xl .image {
+  width: 118px;
+  height: 118px;
+}
+
+.size_hero .image {
+  width: 126px;
+  height: 126px;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+
+.word {
+  color: var(--text-high);
+}
+
+.sep {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.mark {
+  margin-left: 0.3em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.size_sm .wordmark {
+  font-size: 1.05rem;
+}
+
+.size_md .wordmark {
+  font-size: 1.4rem;
+}
+
+.size_lg .wordmark {
+  font-size: 1.85rem;
+}
+
+.size_xl .wordmark {
+  font-size: 2.2rem;
+}
+
+.size_hero .wordmark {
+  font-size: 2.4rem;
 }

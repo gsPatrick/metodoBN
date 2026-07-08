@@ -117,7 +117,7 @@ export default function LoginPage() {
         <span className={styles.scrim} aria-hidden="true" />
 
         <div className={styles.mediaTop}>
-          <Logo size="md" />
+          <Logo size="hero" showName />
         </div>
 
         <blockquote className={styles.quote}>
@@ -128,7 +128,7 @@ export default function LoginPage() {
       <main className={styles.panel}>
         <div className={styles.formWrap}>
           <div className={styles.brandMobile}>
-            <Logo size="md" />
+            <Logo size="lg" />
           </div>
 
           {view === "login" ? (
@@ -187,7 +187,7 @@ export default function LoginPage() {
               </form>
 
               <p className={styles.footerNote}>
-                Ainda não tem acesso? <strong>Fale com a sua nutricionista.</strong>
+                Ainda não tem acesso? <strong>Fale com a Beatriz Nascimento.</strong>
               </p>
             </div>
           ) : (
@@ -239,7 +239,7 @@ export default function LoginPage() {
           )}
 
           <div className={styles.legal}>
-            <Logo size="sm" />
+            <Logo size="sm" showName />
           </div>
         </div>
       </main>

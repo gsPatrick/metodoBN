@@ -11,7 +11,6 @@ import Button from "@/components/atoms/Button/Button";
 import Fruit from "@/components/atoms/Fruit/Fruit";
 import Chat from "@/components/organisms/Chat/Chat";
 import PlanoView from "@/components/organisms/PlanoView/PlanoView";
-import PlanEditor from "@/components/organisms/PlanEditor/PlanEditor";
 import PhotoEditor from "@/components/molecules/PhotoEditor/PhotoEditor";
 import Skeleton from "@/components/atoms/Skeleton/Skeleton";
 import EmptyState from "@/components/molecules/EmptyState/EmptyState";
@@ -217,7 +216,7 @@ export default function PerfilPaciente() {
   const anamneseStatus = anamnesis === undefined ? "loading" : anamnesis ? anamnesis.status : null;
 
   function openAnamnese() {
-    if (anamneseStatus === "completed") setTab("dados");
+    if (anamneseStatus === "completed") router.push(`/anamnese?patient=${id}&view=1`);
     else router.push(`/anamnese?patient=${id}`);
   }
 
@@ -378,9 +377,6 @@ export default function PerfilPaciente() {
             <button type="button" className={`${styles.tab} ${tab === "plano" ? styles.tabActive : ""}`} onClick={() => setTab("plano")}>
               <Icon name={plan ? "utensils" : "lock"} size={18} /> Plano alimentar
             </button>
-            <button type="button" className={`${styles.tab} ${tab === "editar" ? styles.tabActive : ""}`} onClick={() => setTab("editar")}>
-              <Icon name="edit" size={18} /> Montar / editar
-            </button>
           </div>
           <button type="button" className={styles.anamneseBtn} onClick={openAnamnese}>
             <Icon name="clipboard" size={18} />
@@ -443,9 +439,14 @@ export default function PerfilPaciente() {
                       <span className={styles.planoName}>Plano ativo · {plan.totals.kcal} kcal</span>
                       <span className={styles.planoMeta}>{plan.meals.length} refeições · {plan.recipes.length} receitas</span>
                     </span>
-                    <Button variant="ghost" onClick={() => setTab("plano")} iconRight={<Icon name="arrowRight" size={18} />}>
-                      Ver
-                    </Button>
+                    <div className={styles.planoActions}>
+                      <Button variant="ghost" onClick={() => setTab("plano")} iconRight={<Icon name="arrowRight" size={18} />}>
+                        Ver
+                      </Button>
+                      <Button onClick={() => fileRef.current && fileRef.current.click()} iconLeft={<Icon name="upload" size={18} />}>
+                        Atualizar plano alimentar
+                      </Button>
+                    </div>
                   </div>
                 ) : plan === undefined ? (
                   <Skeleton width="100%" height={64} radius="var(--radius-md)" />
@@ -540,14 +541,23 @@ export default function PerfilPaciente() {
                   }
                 />
               ) : snapshot.length ? (
-                <div className={styles.fieldGrid}>
-                  {snapshot.map((f, i) => (
-                    <div key={i} className={styles.field}>
-                      <span className={styles.fieldLabel}>{f.label}</span>
-                      <span className={styles.fieldValue}>{f.value}</span>
+                <>
+                  <div className={styles.fieldGrid}>
+                    {snapshot.map((f, i) => (
+                      <div key={i} className={styles.field}>
+                        <span className={styles.fieldLabel}>{f.label}</span>
+                        <span className={styles.fieldValue}>{f.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {anamnesis.status === "completed" && (
+                    <div className={styles.anamneseViewAction}>
+                      <Button onClick={() => router.push(`/anamnese?patient=${id}&view=1`)} iconLeft={<Icon name="clipboard" size={18} />}>
+                        Ver anamnese completa
+                      </Button>
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
               ) : (
                 <p className={styles.dropHint}>Anamnese {anamnesis.status === "completed" ? "finalizada" : "em rascunho"}.</p>
               )}
@@ -587,13 +597,6 @@ export default function PerfilPaciente() {
               </div>
             </Card>
           ))}
-
-        {/* Montar / editar plano */}
-        {tab === "editar" && (
-          <Card elevation="sm" padding="lg">
-            <PlanEditor patientProfileId={id} onPlanChange={(full) => setPlan(full ? mapPlan(full) : null)} />
-          </Card>
-        )}
 
         <input ref={fileRef} type="file" accept="application/pdf,.pdf" hidden onChange={onPlanoFile} />
         <input ref={photoRef} type="file" accept="image/*" hidden onChange={onPhoto} />

@@ -216,7 +216,7 @@ export default function AjustesPage() {
           <div className={styles.head}>
             <span className={styles.title}>Conta</span>
             <span className={styles.brandLogo}>
-              <Logo size="sm" />
+              <Logo size="sm" showName />
             </span>
           </div>
           <div className={styles.accountActions}>
