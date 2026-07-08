@@ -81,7 +81,7 @@ export default function InstallPrompt() {
   return (
     <>
       <div className={styles.banner} role="dialog" aria-label="Instalar aplicativo">
-        <img className={styles.icon} src="/icon-192.png" alt="" />
+        <img className={styles.icon} src="/publico.png" alt="" />
         <span className={styles.text}>
           <b className={styles.title}>Instalar o Método BN</b>
           <span className={styles.sub}>Mais rápido, em tela cheia, direto da tela inicial.</span>
@@ -98,7 +98,7 @@ export default function InstallPrompt() {
         <div className={styles.sheetOverlay} onClick={() => setIosHelp(false)}>
           <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
             <span className={styles.handle} />
-            <img className={styles.sheetIcon} src="/icon-192.png" alt="" />
+            <img className={styles.sheetIcon} src="/publico.png" alt="" />
             <h3 className={styles.sheetTitle}>Instalar no iPhone</h3>
             <p className={styles.sheetSub}>É rapidinho — 3 passos no Safari:</p>
             <ol className={styles.steps}>
