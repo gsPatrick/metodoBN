@@ -116,7 +116,8 @@ function Segment({ options, value, onChange, label }) {
 function AnamneseInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const readonly = searchParams.get("view") === "1";
+  // modo visualização (anamnese finalizada) — pode virar edição pelo botão "Editar"
+  const [readonly, setReadonly] = useState(searchParams.get("view") === "1");
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(false);
   const [form, setForm] = useState({});
@@ -125,7 +126,7 @@ function AnamneseInner() {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(null);
 
-  // restaura rascunho salvo (ou pré-preenche do cadastro / anamnese finalizada)
+  // carrega a anamnese (API) ou pré-preenche com os dados do cadastro
   useEffect(() => {
     let active = true;
 
@@ -159,25 +160,7 @@ function AnamneseInner() {
       }
 
       // ---- modo edição ----
-      // 1) rascunho local (guarda também o paciente a que pertence)
-      try {
-        const draft = localStorage.getItem("bn_anamnese_draft");
-        if (draft) {
-          const d = JSON.parse(draft);
-          const belongs = !patientId || !d.patientId || d.patientId === patientId;
-          if (belongs && d.form) {
-            if (d.patientId) setPatientId((cur) => cur || d.patientId);
-            setForm(d.form);
-            if (typeof d.index === "number") setIndex(d.index);
-            if (active) setReady(true);
-            return;
-          }
-        }
-      } catch {
-        /* ignora */
-      }
-
-      // 2) dados vindos do cadastro (novo paciente)
+      // 1) dados vindos do cadastro (novo paciente)
       let pid = patientId;
       let base = null;
       try {
@@ -199,7 +182,7 @@ function AnamneseInner() {
       if (pid && pid !== patientId) setPatientId(pid);
 
       if (pid) {
-        // 3) anamnese já existente na API — continua/edita de onde parou
+        // 2) anamnese já existente na API — continua/edita de onde parou
         try {
           const a = await apiGet(`/anamnesis/${pid}`);
           if (!active) return;
@@ -212,7 +195,7 @@ function AnamneseInner() {
           /* segue para os fallbacks */
         }
 
-        // 4) recuperação: anamnese concluída que não chegou à API (ficou só neste navegador)
+        // 3) recuperação: anamnese concluída que não chegou à API (ficou só neste navegador)
         try {
           const fin = localStorage.getItem("bn_anamnese_final");
           if (fin) {
@@ -251,16 +234,6 @@ function AnamneseInner() {
       active = false;
     };
   }, [readonly, patientId]);
-
-  // salva automaticamente a cada mudança (etapa + respostas + paciente)
-  useEffect(() => {
-    if (!ready || readonly) return;
-    try {
-      localStorage.setItem("bn_anamnese_draft", JSON.stringify({ index, form, patientId }));
-    } catch {
-      /* ignora */
-    }
-  }, [ready, readonly, index, form, patientId]);
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
   const toggle = (g, item) =>
@@ -377,13 +350,13 @@ function AnamneseInner() {
       // silêncio e a anamnese "finalizada" nunca chegava à API.
       if (!patientId) {
         throw new Error(
-          "Não foi possível identificar o paciente desta anamnese. Suas respostas estão guardadas como rascunho — abra a anamnese pela página do paciente (Pacientes → paciente → Anamnese) e conclua novamente."
+          "Não foi possível identificar o paciente desta anamnese. Abra a anamnese pela página do paciente (Pacientes → paciente → Anamnese) e conclua novamente."
         );
       }
       // Persiste a anamnese completa na API (snapshot + status finalizado).
       await apiPut(`/anamnesis/${patientId}`, { generalInfo: form, status: "completed" });
       try {
-        localStorage.removeItem("bn_anamnese_draft");
+        localStorage.removeItem("bn_anamnese_draft"); // limpeza de versões antigas
         localStorage.setItem("bn_anamnese_final", JSON.stringify({ form, patientId }));
       } catch {
         /* ignora */
@@ -406,8 +379,20 @@ function AnamneseInner() {
       finalize();
       return;
     }
+    // salva o progresso na API a cada seção (sem status: não mexe em finalizada)
+    if (!readonly && patientId) {
+      apiPut(`/anamnesis/${patientId}`, { generalInfo: form }).catch(() => {
+        /* silencioso — a conclusão valida o salvamento de verdade */
+      });
+    }
     setIndex((i) => i + 1);
     window.scrollTo({ top: 0 });
+  }
+
+  // sai do modo visualização para permitir ajustes na anamnese finalizada
+  function startEdit() {
+    setReadonly(false);
+    if (patientId) router.replace(`/anamnese?patient=${patientId}`);
   }
   function back() {
     setIndex((i) => Math.max(0, i - 1));
@@ -451,8 +436,15 @@ function AnamneseInner() {
     <AppShell active="anamnese" title={tituloAnamnese}>
       <div className={styles.page}>
         {readonly && (
-          <div className={styles.viewNote}>
-            <Icon name="eye" size={16} /> Anamnese finalizada — somente leitura.
+          <div className={styles.viewBar}>
+            <div className={styles.viewNote}>
+              <Icon name="eye" size={16} /> Anamnese finalizada — somente leitura.
+            </div>
+            {patientId && (
+              <Button variant="ghost" onClick={startEdit} iconLeft={<Icon name="edit" size={18} />}>
+                Editar anamnese
+              </Button>
+            )}
           </div>
         )}
         {index > 0 && (

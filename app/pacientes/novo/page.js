@@ -154,7 +154,6 @@ export default function NovoPacientePage() {
         "bn_anamnese_patient",
         JSON.stringify({ patientProfileId: profileId, nome: form.nome, sexo: form.sexo, nascimento: form.nascimento })
       );
-      localStorage.removeItem("bn_anamnese_draft");
     } catch {
       /* ignora */
     }

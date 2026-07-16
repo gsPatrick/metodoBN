@@ -16,6 +16,13 @@
 .fieldset:disabled {
   opacity: 0.92;
 }
+.viewBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
 .viewNote {
   display: inline-flex;
   align-items: center;

@@ -19,8 +19,6 @@ const NAV_BASE = [
   { key: "mensagens", label: "Mensagens", icon: "chat", href: "/mensagens" },
   { key: "ajustes", label: "Ajustes", icon: "settings", href: "/ajustes" }
 ];
-// Anamnese só aparece quando há uma anamnese em rascunho (não finalizada)
-const ANAMNESE_ITEM = { key: "anamnese", label: "Anamnese", icon: "clipboard", href: "/anamnese", badge: "rascunho" };
 
 const TABS = [
   { key: "inicio", label: "Início", icon: "grid", href: "/dashboard" },
@@ -40,18 +38,12 @@ export default function AppShell({
 }) {
   const router = useRouter();
   const [hidden, setHidden] = useState(false);
-  const [hasDraft, setHasDraft] = useState(false);
   const [me, setMe] = useState(null);
   const [unread, setUnread] = useState(0);
   const lastY = useRef(0);
   const ticking = useRef(false);
 
   useEffect(() => {
-    try {
-      setHasDraft(!!localStorage.getItem("bn_anamnese_draft"));
-    } catch {
-      /* ignora */
-    }
     setMe(getCurrentUser());
   }, []);
 
@@ -89,7 +81,7 @@ export default function AppShell({
     router.push("/login");
   }
 
-  const nav = hasDraft ? [NAV_BASE[0], NAV_BASE[1], ANAMNESE_ITEM, NAV_BASE[2], NAV_BASE[3]] : NAV_BASE;
+  const nav = NAV_BASE;
 
   useEffect(() => {
     function onScroll() {
