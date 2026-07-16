@@ -6,10 +6,12 @@ import styles from "./page.module.css";
 
 import AppShell from "@/components/organisms/AppShell/AppShell";
 import Icon from "@/components/atoms/Icon/Icon";
+import Button from "@/components/atoms/Button/Button";
 import Fruit from "@/components/atoms/Fruit/Fruit";
 import Skeleton from "@/components/atoms/Skeleton/Skeleton";
 import EmptyState from "@/components/molecules/EmptyState/EmptyState";
-import { apiGet } from "@/lib/api";
+import Modal from "@/components/molecules/Modal/Modal";
+import { apiGet, apiDelete } from "@/lib/api";
 
 const FRUITS = ["morango", "banana", "laranja", "maca"];
 const SEX_LABEL = { male: "Masculino", female: "Feminino", other: "Outro" };
@@ -34,16 +36,40 @@ function ageFrom(birthDate) {
   return a >= 0 && a < 130 ? a : null;
 }
 
-function PatientCard({ p, fruit, onClick }) {
+function PatientCard({ p, fruit, onClick, onDelete }) {
   const name = (p.user && p.user.name) || "Paciente";
   const age = ageFrom(p.birthDate);
   const sub = [SEX_LABEL[p.sex] || null, age != null ? `${age} anos` : null].filter(Boolean).join(" · ") || "Sem dados";
   const active = !p.user || p.user.isActive !== false;
   return (
-    <button type="button" className={styles.card} onClick={onClick}>
+    // div (não button): o card tem um botão de excluir dentro — button aninhado é inválido
+    <div
+      className={styles.card}
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    >
       <div className={styles.cardTop}>
         <Fruit name={fruit} fallback="apple" size={44} className={styles.cardFruit} />
       </div>
+      <button
+        type="button"
+        className={styles.cardDelete}
+        aria-label={`Excluir ${name}`}
+        title="Excluir paciente"
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+      >
+        <Icon name="trash" size={16} />
+      </button>
       <span className={styles.cardAvatar}>{initials(name)}</span>
       <div className={styles.cardBody}>
         <span className={styles.cardName}>{name}</span>
@@ -55,7 +81,7 @@ function PatientCard({ p, fruit, onClick }) {
           <Icon name="clipboard" size={14} /> Ver ficha completa
         </span>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -81,6 +107,9 @@ export default function PacientesPage() {
   const [q, setQ] = useState("");
   const [patients, setPatients] = useState(null); // null = carregando
   const [error, setError] = useState(null);
+  const [toDelete, setToDelete] = useState(null); // paciente aguardando confirmação
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
 
   async function load() {
     setError(null);
@@ -97,6 +126,26 @@ export default function PacientesPage() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function askDelete(p) {
+    setDeleteError(null);
+    setToDelete(p);
+  }
+
+  async function confirmDelete() {
+    if (!toDelete) return;
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await apiDelete(`/users/profiles/${toDelete.id}`);
+      setPatients((prev) => (prev || []).filter((p) => p.id !== toDelete.id));
+      setToDelete(null);
+    } catch (e) {
+      setDeleteError(e && e.message ? e.message : "Não foi possível excluir o paciente.");
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   const list = useMemo(() => {
     if (!patients) return [];
@@ -163,10 +212,45 @@ export default function PacientesPage() {
         ) : (
           <div className={styles.grid}>
             {list.map((p, i) => (
-              <PatientCard key={p.id} p={p} fruit={FRUITS[i % FRUITS.length]} onClick={() => router.push(`/pacientes/${p.id}`)} />
+              <PatientCard
+                key={p.id}
+                p={p}
+                fruit={FRUITS[i % FRUITS.length]}
+                onClick={() => router.push(`/pacientes/${p.id}`)}
+                onDelete={() => askDelete(p)}
+              />
             ))}
           </div>
         )}
+
+        <Modal
+          open={!!toDelete}
+          onClose={deleting ? undefined : () => setToDelete(null)}
+          closeOnBackdrop={!deleting}
+          closeOnEsc={!deleting}
+          title="Excluir paciente"
+          description={toDelete ? `Tem certeza que deseja excluir ${(toDelete.user && toDelete.user.name) || "este paciente"}?` : ""}
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => setToDelete(null)} disabled={deleting}>
+                Cancelar
+              </Button>
+              <Button variant="danger" onClick={confirmDelete} loading={deleting} iconLeft={<Icon name="trash" size={18} />}>
+                Excluir paciente
+              </Button>
+            </>
+          }
+        >
+          <p className={styles.deleteWarn}>
+            Essa ação é <strong>permanente</strong>: a conta do paciente e todos os dados vinculados (anamnese, plano
+            alimentar, conversas e histórico) serão removidos e não poderão ser recuperados.
+          </p>
+          {deleteError && (
+            <p className={styles.deleteError}>
+              <Icon name="help" size={16} /> {deleteError}
+            </p>
+          )}
+        </Modal>
       </div>
     </AppShell>
   );
