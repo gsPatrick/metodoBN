@@ -46,12 +46,14 @@ function ageFrom(dateStr) {
 }
 
 function Field({ label, hint, span, children }) {
+  // <div> (não <label>): um <label> englobando botões faz cliques na área do
+  // rótulo dispararem o primeiro botão interno (ex.: seleção de sexo).
   return (
-    <label className={`${styles.field} ${span ? styles.colSpan : ""}`}>
+    <div className={`${styles.field} ${span ? styles.colSpan : ""}`}>
       <span className={styles.fieldLabel}>{label}</span>
       {children}
       {hint && <span className={styles.fieldHint}>{hint}</span>}
-    </label>
+    </div>
   );
 }
 

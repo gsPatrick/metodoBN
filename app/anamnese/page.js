@@ -148,7 +148,8 @@ function AnamneseInner() {
           const fin = localStorage.getItem("bn_anamnese_final");
           if (fin) {
             const d = JSON.parse(fin);
-            if (d.form) setForm(d.form);
+            // só usa o fallback local se pertencer a este paciente (ou se não houver como saber)
+            if (d.form && (!d.patientId || !patientId || d.patientId === patientId)) setForm(d.form);
           }
         } catch {
           /* ignora */
@@ -157,35 +158,91 @@ function AnamneseInner() {
         return;
       }
 
+      // ---- modo edição ----
+      // 1) rascunho local (guarda também o paciente a que pertence)
       try {
         const draft = localStorage.getItem("bn_anamnese_draft");
         if (draft) {
           const d = JSON.parse(draft);
-          if (d.form) setForm(d.form);
-          if (typeof d.index === "number") setIndex(d.index);
-          if (active) setReady(true);
-          return;
+          const belongs = !patientId || !d.patientId || d.patientId === patientId;
+          if (belongs && d.form) {
+            if (d.patientId) setPatientId((cur) => cur || d.patientId);
+            setForm(d.form);
+            if (typeof d.index === "number") setIndex(d.index);
+            if (active) setReady(true);
+            return;
+          }
         }
       } catch {
         /* ignora */
       }
+
+      // 2) dados vindos do cadastro (novo paciente)
+      let pid = patientId;
+      let base = null;
       try {
         const novo = sessionStorage.getItem("bn_anamnese_patient") || sessionStorage.getItem("bn_novo_paciente");
         if (novo) {
           const d = JSON.parse(novo);
-          if (d.patientProfileId) setPatientId((cur) => cur || d.patientProfileId);
-          setForm((p) => ({
-            ...p,
+          if (d.patientProfileId) pid = pid || d.patientProfileId;
+          base = {
             nome: d.nome || "",
             sexo: d.sexo || "",
             nascimento: d.nascimento || "",
             email: d.email || "",
             celular: d.celular || d.telefone || ""
-          }));
+          };
         }
       } catch {
         /* ignora */
       }
+      if (pid && pid !== patientId) setPatientId(pid);
+
+      if (pid) {
+        // 3) anamnese já existente na API — continua/edita de onde parou
+        try {
+          const a = await apiGet(`/anamnesis/${pid}`);
+          if (!active) return;
+          if (a && a.generalInfo && Object.keys(a.generalInfo).length) {
+            setForm({ ...(base || {}), ...a.generalInfo });
+            setReady(true);
+            return;
+          }
+        } catch {
+          /* segue para os fallbacks */
+        }
+
+        // 4) recuperação: anamnese concluída que não chegou à API (ficou só neste navegador)
+        try {
+          const fin = localStorage.getItem("bn_anamnese_final");
+          if (fin) {
+            const d = JSON.parse(fin);
+            if (d && d.form) {
+              const norm = (s) => String(s || "").trim().toLowerCase();
+              let belongs = d.patientId === pid;
+              if (!d.patientId) {
+                // formato antigo (sem id do paciente): confere pelo nome do perfil
+                let nome = base && base.nome;
+                if (!nome) {
+                  const p = await apiGet(`/users/profiles/${pid}`).catch(() => null);
+                  if (!active) return;
+                  nome = p && p.user && p.user.name;
+                }
+                belongs = !!nome && norm(nome) === norm(d.form.nome);
+              }
+              if (belongs) {
+                setForm({ ...(base || {}), ...d.form });
+                if (active) setReady(true);
+                return;
+              }
+            }
+          }
+        } catch {
+          /* ignora */
+        }
+      }
+
+      if (base) setForm((p) => ({ ...p, ...base }));
       if (active) setReady(true);
     }
 
@@ -195,15 +252,15 @@ function AnamneseInner() {
     };
   }, [readonly, patientId]);
 
-  // salva automaticamente a cada mudança (etapa + respostas)
+  // salva automaticamente a cada mudança (etapa + respostas + paciente)
   useEffect(() => {
     if (!ready || readonly) return;
     try {
-      localStorage.setItem("bn_anamnese_draft", JSON.stringify({ index, form }));
+      localStorage.setItem("bn_anamnese_draft", JSON.stringify({ index, form, patientId }));
     } catch {
       /* ignora */
     }
-  }, [ready, readonly, index, form]);
+  }, [ready, readonly, index, form, patientId]);
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
   const toggle = (g, item) =>
@@ -316,13 +373,18 @@ function AnamneseInner() {
     setSaving(true);
     setSaveError(null);
     try {
-      // Persiste a anamnese completa na API (snapshot + status finalizado).
-      if (patientId) {
-        await apiPut(`/anamnesis/${patientId}`, { generalInfo: form, status: "completed" });
+      // Sem paciente identificado NÃO conclui: antes o salvamento era pulado em
+      // silêncio e a anamnese "finalizada" nunca chegava à API.
+      if (!patientId) {
+        throw new Error(
+          "Não foi possível identificar o paciente desta anamnese. Suas respostas estão guardadas como rascunho — abra a anamnese pela página do paciente (Pacientes → paciente → Anamnese) e conclua novamente."
+        );
       }
+      // Persiste a anamnese completa na API (snapshot + status finalizado).
+      await apiPut(`/anamnesis/${patientId}`, { generalInfo: form, status: "completed" });
       try {
         localStorage.removeItem("bn_anamnese_draft");
-        localStorage.setItem("bn_anamnese_final", JSON.stringify({ form }));
+        localStorage.setItem("bn_anamnese_final", JSON.stringify({ form, patientId }));
       } catch {
         /* ignora */
       }
@@ -1065,11 +1127,14 @@ function MealsInput({ value, onChange }) {
 }
 
 function Field({ label, span, children }) {
+  // <div> (não <label>): um <label> englobando botões faz cliques em áreas não
+  // interativas dispararem o primeiro botão interno (ex.: "Remover refeição"),
+  // apagando dados do formulário sem o usuário perceber.
   return (
-    <label className={`${styles.field} ${span ? styles.colSpan : ""}`}>
+    <div className={`${styles.field} ${span ? styles.colSpan : ""}`}>
       <span className={styles.fieldLabel}>{label}</span>
       {children}
-    </label>
+    </div>
   );
 }
 
