@@ -14,8 +14,9 @@ import PlanoView from "@/components/organisms/PlanoView/PlanoView";
 import PhotoEditor from "@/components/molecules/PhotoEditor/PhotoEditor";
 import Skeleton from "@/components/atoms/Skeleton/Skeleton";
 import EmptyState from "@/components/molecules/EmptyState/EmptyState";
+import Modal from "@/components/molecules/Modal/Modal";
 import { useUpload } from "@/components/providers/UploadProvider";
-import { apiGet, apiPost, apiPatch, getCurrentUser } from "@/lib/api";
+import { apiGet, apiPost, apiPatch, apiDelete, getCurrentUser } from "@/lib/api";
 import { categorizeShopping, ingredientsFromMeals } from "@/lib/shopping";
 
 const SEX_LABEL = { male: "Masculino", female: "Feminino", other: "Outro" };
@@ -145,6 +146,9 @@ export default function PerfilPaciente() {
   const [msgs, setMsgs] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [editorSrc, setEditorSrc] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
   const fileRef = useRef(null);
   const photoRef = useRef(null);
 
@@ -218,6 +222,23 @@ export default function PerfilPaciente() {
   function openAnamnese() {
     if (anamneseStatus === "completed") router.push(`/anamnese?patient=${id}&view=1`);
     else router.push(`/anamnese?patient=${id}`);
+  }
+
+  async function deletePatient() {
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await apiDelete(`/users/profiles/${id}`);
+      try {
+        localStorage.removeItem(`bn_foto_${id}`);
+      } catch {
+        /* ignora */
+      }
+      router.push("/pacientes");
+    } catch (e) {
+      setDeleteError(e && e.message ? e.message : "Não foi possível excluir o paciente.");
+      setDeleting(false);
+    }
   }
 
   async function saveObs() {
@@ -378,12 +399,25 @@ export default function PerfilPaciente() {
               <Icon name={plan ? "utensils" : "lock"} size={18} /> Plano alimentar
             </button>
           </div>
-          <button type="button" className={styles.anamneseBtn} onClick={openAnamnese}>
-            <Icon name="clipboard" size={18} />
-            {anamneseStatus === "completed" ? "Ver anamnese" : "Anamnese"}
-            {anamneseStatus === "draft" && <span className={`${styles.anamneseBadge} ${styles.badgeRascunho}`}>rascunho</span>}
-            {anamneseStatus === "completed" && <span className={`${styles.anamneseBadge} ${styles.badgeFinal}`}>finalizada</span>}
-          </button>
+          <div className={styles.toolbarActions}>
+            <button type="button" className={styles.anamneseBtn} onClick={openAnamnese}>
+              <Icon name="clipboard" size={18} />
+              {anamneseStatus === "completed" ? "Ver anamnese" : "Anamnese"}
+              {anamneseStatus === "draft" && <span className={`${styles.anamneseBadge} ${styles.badgeRascunho}`}>rascunho</span>}
+              {anamneseStatus === "completed" && <span className={`${styles.anamneseBadge} ${styles.badgeFinal}`}>finalizada</span>}
+            </button>
+            <button
+              type="button"
+              className={styles.deleteBtn}
+              onClick={() => {
+                setDeleteError(null);
+                setConfirmDelete(true);
+              }}
+            >
+              <Icon name="trash" size={18} />
+              Excluir paciente
+            </button>
+          </div>
         </div>
 
         {/* Visão geral */}
@@ -597,6 +631,35 @@ export default function PerfilPaciente() {
               </div>
             </Card>
           ))}
+
+        <Modal
+          open={confirmDelete}
+          onClose={deleting ? undefined : () => setConfirmDelete(false)}
+          closeOnBackdrop={!deleting}
+          closeOnEsc={!deleting}
+          title="Excluir paciente"
+          description={`Tem certeza que deseja excluir ${name}?`}
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => setConfirmDelete(false)} disabled={deleting}>
+                Cancelar
+              </Button>
+              <Button variant="danger" onClick={deletePatient} loading={deleting} iconLeft={<Icon name="trash" size={18} />}>
+                Excluir paciente
+              </Button>
+            </>
+          }
+        >
+          <p className={styles.deleteWarn}>
+            Essa ação é <strong>permanente</strong>: a conta do paciente e todos os dados vinculados (anamnese, plano
+            alimentar, conversas e histórico) serão removidos e não poderão ser recuperados.
+          </p>
+          {deleteError && (
+            <p className={styles.deleteError}>
+              <Icon name="help" size={16} /> {deleteError}
+            </p>
+          )}
+        </Modal>
 
         <input ref={fileRef} type="file" accept="application/pdf,.pdf" hidden onChange={onPlanoFile} />
         <input ref={photoRef} type="file" accept="image/*" hidden onChange={onPhoto} />

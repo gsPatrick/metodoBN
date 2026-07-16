@@ -573,3 +573,49 @@
   background: var(--accent) !important;
   color: var(--text-on-accent, #04110b) !important;
 }
+
+/* ===== exclusão de paciente ===== */
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.deleteBtn {
+  margin-bottom: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1.5px solid var(--danger);
+  border-radius: var(--radius-pill);
+  background: var(--danger-soft);
+  color: var(--danger-strong);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.deleteBtn:hover {
+  background: var(--danger);
+  color: #ffffff;
+}
+.deleteWarn {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-medium);
+  line-height: 1.55;
+}
+.deleteWarn strong {
+  color: var(--danger-strong);
+}
+.deleteError {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--danger-strong);
+}
