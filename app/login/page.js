@@ -116,10 +116,6 @@ export default function LoginPage() {
         )}
         <span className={styles.scrim} aria-hidden="true" />
 
-        <div className={styles.mediaTop}>
-          <Logo size="hero" showName />
-        </div>
-
         <blockquote className={styles.quote}>
           <p className={styles.quoteText}>{HERO_PHRASE}</p>
         </blockquote>
@@ -127,8 +123,9 @@ export default function LoginPage() {
 
       <main className={styles.panel}>
         <div className={styles.formWrap}>
-          <div className={styles.brandMobile}>
-            <Logo size="lg" />
+          {/* Marca única da tela, centralizada acima do formulário. */}
+          <div className={styles.brandTop}>
+            <Logo size="lg" showName />
           </div>
 
           {view === "login" ? (
@@ -238,9 +235,6 @@ export default function LoginPage() {
             </div>
           )}
 
-          <div className={styles.legal}>
-            <Logo size="sm" showName />
-          </div>
         </div>
       </main>
     </div>

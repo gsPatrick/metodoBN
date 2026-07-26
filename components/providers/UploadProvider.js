@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 import styles from "./UploadProvider.module.css";
 import Icon from "@/components/atoms/Icon/Icon";
-import { apiPost } from "@/lib/api";
+import { apiPost, apiDownload, saveBlob } from "@/lib/api";
 
 const UploadCtx = createContext(null);
 export const useUpload = () => useContext(UploadCtx) || { uploads: {}, startImport: () => {}, dismissUpload: () => {}, toast: () => {} };
@@ -15,6 +15,14 @@ function fileToDataURL(file) {
     r.onerror = reject;
     r.readAsDataURL(file);
   });
+}
+
+// Baixa o PDF do plano já com a marca da nutri. O arquivo fica vinculado ao
+// plano na importação, então isto funciona sempre — não só logo após o upload.
+export async function downloadPlanPdf(planId) {
+  if (!planId) return;
+  const { blob, filename } = await apiDownload(`/diet-plans/${planId}/pdf`, "plano-alimentar.pdf");
+  saveBlob(blob, filename);
 }
 
 function Toaster({ toasts, onClose }) {
@@ -88,8 +96,20 @@ export default function UploadProvider({ children }) {
           title: `Plano de ${name}`,
         });
         clearInterval(timers.current[profileId]);
-        patchUp(profileId, { status: "done", progress: 100, plan: res && res.plan });
+        const plan = res && res.plan;
+        patchUp(profileId, { status: "done", progress: 100, plan });
         toast(`Plano de ${name.split(" ")[0]} importado! 🎉`, "success");
+
+        // Já baixa o PDF com a marca dela — é o arquivo que vai pra paciente.
+        // O plano foi importado com sucesso, então falha aqui não é erro de
+        // importação: avisa e deixa o botão "Baixar PDF" como segunda chance.
+        if (plan && plan.id) {
+          try {
+            await downloadPlanPdf(plan.id);
+          } catch {
+            toast("Plano importado, mas o download do PDF falhou. Use o botão Baixar PDF.", "error");
+          }
+        }
       } catch (e) {
         clearInterval(timers.current[profileId]);
         patchUp(profileId, { status: "error", error: (e && e.message) || "Falha ao importar o plano." });

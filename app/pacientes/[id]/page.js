@@ -15,7 +15,7 @@ import PhotoEditor from "@/components/molecules/PhotoEditor/PhotoEditor";
 import Skeleton from "@/components/atoms/Skeleton/Skeleton";
 import EmptyState from "@/components/molecules/EmptyState/EmptyState";
 import Modal from "@/components/molecules/Modal/Modal";
-import { useUpload } from "@/components/providers/UploadProvider";
+import { useUpload, downloadPlanPdf } from "@/components/providers/UploadProvider";
 import { apiGet, apiPost, apiPatch, apiDelete, getCurrentUser } from "@/lib/api";
 import { categorizeShopping, ingredientsFromMeals } from "@/lib/shopping";
 
@@ -83,6 +83,7 @@ function mapPlan(dp) {
     Array.isArray(dp.shoppingItems) && dp.shoppingItems.length ? dp.shoppingItems : ingredientsFromMeals(dp.meals);
   const shopping = categorizeShopping(shoppingSource);
   return {
+    id: dp.id,
     prescritoEm: fmtDate(dp.createdAt),
     totals: { kcal: num(dp.targetKcal), c: num(dp.targetCarbsG), p: num(dp.targetProteinG), l: num(dp.targetFatG) },
     meals,
@@ -149,6 +150,8 @@ export default function PerfilPaciente() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [pdfError, setPdfError] = useState(null);
   const fileRef = useRef(null);
   const photoRef = useRef(null);
 
@@ -218,6 +221,21 @@ export default function PerfilPaciente() {
   }, [id]);
 
   const anamneseStatus = anamnesis === undefined ? "loading" : anamnesis ? anamnesis.status : null;
+
+  // O PDF com a marca fica vinculado ao plano, então o download está sempre
+  // disponível — não só logo depois do upload.
+  async function baixarPdf() {
+    if (!plan || !plan.id) return;
+    setPdfBusy(true);
+    setPdfError(null);
+    try {
+      await downloadPlanPdf(plan.id);
+    } catch (e) {
+      setPdfError((e && e.message) || "Não foi possível baixar o PDF.");
+    } finally {
+      setPdfBusy(false);
+    }
+  }
 
   function openAnamnese() {
     if (anamneseStatus === "completed") router.push(`/anamnese?patient=${id}&view=1`);
@@ -602,7 +620,23 @@ export default function PerfilPaciente() {
         {/* Plano alimentar */}
         {tab === "plano" &&
           (plan ? (
-            <PlanoView plan={plan} patientId={id} />
+            <>
+              <div className={styles.planPdfBar}>
+                <span className={`${styles.planPdfHint} ${pdfError ? styles.planPdfHintError : ""}`}>
+                  <Icon name={pdfError ? "help" : "download"} size={16} />
+                  {pdfError || `PDF com a sua logo e assinatura — é este que você envia para ${name.split(" ")[0]}.`}
+                </span>
+                <Button
+                  variant="outline"
+                  onClick={baixarPdf}
+                  loading={pdfBusy}
+                  iconLeft={<Icon name="download" size={18} />}
+                >
+                  Baixar PDF
+                </Button>
+              </div>
+              <PlanoView plan={plan} patientId={id} />
+            </>
           ) : up && up.status === "uploading" ? (
             <Card elevation="sm" padding="lg">
               <UploadProgress up={up} />

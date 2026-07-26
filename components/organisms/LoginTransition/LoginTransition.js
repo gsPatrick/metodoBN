@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import styles from "./LoginTransition.module.css";
-import Logo from "@/components/atoms/Logo/Logo";
 import Icon from "@/components/atoms/Icon/Icon";
 import Fruit from "@/components/atoms/Fruit/Fruit";
 
@@ -50,9 +49,6 @@ export default function LoginTransition({ variant = "nutri", name, onDone, durat
         <span className={styles.badge}>
           <span className={styles.badgeRing} />
           <Icon name="check" size={30} strokeWidth={2.4} />
-        </span>
-        <span className={styles.logo}>
-          <Logo size="lg" showName />
         </span>
         <h1 className={styles.hello}>Bem-vinda{first ? `, ${first}` : ""}</h1>
         <p className={styles.sub}>Abrindo o seu painel…</p>

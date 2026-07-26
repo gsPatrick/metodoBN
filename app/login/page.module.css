@@ -11,7 +11,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* Só a frase mora aqui (a marca fica no painel do formulário), então ancora embaixo. */
+  justify-content: flex-end;
   padding: clamp(var(--space-8), 4vw, var(--space-16));
   background: linear-gradient(160deg, #14161b 0%, #0c0d10 100%);
 }
@@ -43,7 +44,7 @@
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 14px, transparent 14px 28px);
 }
 
-/* Scrim para legibilidade da logo (topo) e da frase (base) */
+/* Scrim: profundidade no topo e legibilidade da frase na base */
 .scrim {
   position: absolute;
   inset: 0;
@@ -52,14 +53,6 @@
   background:
     linear-gradient(180deg, rgba(8, 9, 11, 0.5) 0%, rgba(8, 9, 11, 0) 26%),
     linear-gradient(0deg, rgba(8, 9, 11, 0.82) 0%, rgba(8, 9, 11, 0) 46%);
-}
-
-.mediaTop {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  filter: drop-shadow(0 2px 18px rgba(0, 0, 0, 0.35));
 }
 
 /* Frase de impacto — canto inferior esquerdo */
@@ -99,8 +92,10 @@
   animation: fadeUp 0.6s var(--ease-out) both;
 }
 
-.brandMobile {
-  display: none;
+/* Marca única da tela — centralizada acima do "Entrar", em todos os tamanhos. */
+.brandTop {
+  display: flex;
+  justify-content: center;
 }
 
 .head {
@@ -163,12 +158,6 @@
 .footerNote strong {
   color: var(--text-medium);
   font-weight: var(--fw-semibold);
-}
-
-.legal {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--space-2);
 }
 
 /* troca login <-> esqueci senha */
@@ -255,10 +244,6 @@
   .panel {
     border-left: none;
     border-top: 1px solid var(--border-subtle);
-  }
-  .brandMobile {
-    display: flex;
-    justify-content: center;
   }
 }
 
