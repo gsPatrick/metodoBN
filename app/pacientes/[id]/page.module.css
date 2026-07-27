@@ -384,6 +384,27 @@
   color: var(--text-low);
 }
 
+/* Aba Acesso — senha do app da paciente. */
+.acessoForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  max-width: 460px;
+}
+.acessoRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.acessoNote {
+  margin-top: var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--text-low);
+  max-width: 62ch;
+}
+
 /* Barra de download do PDF do plano já com a marca da nutri. */
 .planPdfBar {
   display: flex;

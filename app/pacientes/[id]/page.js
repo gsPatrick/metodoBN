@@ -8,6 +8,9 @@ import AppShell from "@/components/organisms/AppShell/AppShell";
 import Card from "@/components/atoms/Card/Card";
 import Icon from "@/components/atoms/Icon/Icon";
 import Button from "@/components/atoms/Button/Button";
+import Input from "@/components/atoms/Input/Input";
+import FormField from "@/components/molecules/FormField/FormField";
+import Alert from "@/components/molecules/Alert/Alert";
 import Fruit from "@/components/atoms/Fruit/Fruit";
 import Chat from "@/components/organisms/Chat/Chat";
 import PlanoView from "@/components/organisms/PlanoView/PlanoView";
@@ -47,6 +50,12 @@ function fmtDate(iso) {
   if (Number.isNaN(d.getTime())) return "—";
   return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
 }
+// Mesma máscara de app/ajustes — o telefone é ditado para a paciente.
+const maskPhone = (v) => {
+  const d = (v || "").replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 10) return d.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{4})(\d)/, "$1-$2");
+  return d.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{5})(\d)/, "$1-$2");
+};
 function humanize(k) {
   return k.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
@@ -152,6 +161,11 @@ export default function PerfilPaciente() {
   const [deleteError, setDeleteError] = useState(null);
   const [pdfBusy, setPdfBusy] = useState(false);
   const [pdfError, setPdfError] = useState(null);
+  const [senha, setSenha] = useState("");
+  const [senhaBusy, setSenhaBusy] = useState(false);
+  const [senhaOk, setSenhaOk] = useState(false);
+  const [senhaErro, setSenhaErro] = useState(null);
+  const [copiado, setCopiado] = useState(false);
   const fileRef = useRef(null);
   const photoRef = useRef(null);
 
@@ -221,6 +235,44 @@ export default function PerfilPaciente() {
   }, [id]);
 
   const anamneseStatus = anamnesis === undefined ? "loading" : anamnesis ? anamnesis.status : null;
+
+  // --- Acesso da paciente ao app ---
+  // Alfabeto sem caracteres ambíguos (0/O, 1/l/I): a senha vai ser ditada ou
+  // colada no WhatsApp, então precisa ser fácil de ler e digitar.
+  function gerarSenha() {
+    const abc = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const bytes = new Uint32Array(10);
+    crypto.getRandomValues(bytes);
+    setSenha(Array.from(bytes, (n) => abc[n % abc.length]).join(""));
+    setSenhaOk(false);
+    setSenhaErro(null);
+    setCopiado(false);
+  }
+
+  async function copiarSenha() {
+    try {
+      await navigator.clipboard.writeText(senha);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2500);
+    } catch {
+      setSenhaErro("Não consegui copiar. Selecione a senha e copie manualmente.");
+    }
+  }
+
+  async function salvarSenha(e) {
+    e.preventDefault();
+    setSenhaBusy(true);
+    setSenhaOk(false);
+    setSenhaErro(null);
+    try {
+      await apiPatch(`/users/profiles/${id}/password`, { password: senha });
+      setSenhaOk(true);
+    } catch (err) {
+      setSenhaErro((err && err.message) || "Não foi possível definir a senha.");
+    } finally {
+      setSenhaBusy(false);
+    }
+  }
 
   // O PDF com a marca fica vinculado ao plano, então o download está sempre
   // disponível — não só logo depois do upload.
@@ -365,6 +417,10 @@ export default function PerfilPaciente() {
 
   const name = (profile.user && profile.user.name) || "Paciente";
   const email = (profile.user && profile.user.email) || "—";
+  // A conta é identificada por e-mail OU telefone; sem nenhum dos dois não há login.
+  const phone = (profile.user && profile.user.phone) || null;
+  const hasLogin = !!((profile.user && profile.user.email) || phone);
+  const lastLogin = profile.user && profile.user.lastLoginAt ? fmtDate(profile.user.lastLoginAt) : null;
   const age = ageFrom(profile.birthDate);
   const sexo = SEX_LABEL[profile.sex] || "—";
   const restr = profile.restrictions || [];
@@ -415,6 +471,9 @@ export default function PerfilPaciente() {
             </button>
             <button type="button" className={`${styles.tab} ${tab === "plano" ? styles.tabActive : ""}`} onClick={() => setTab("plano")}>
               <Icon name={plan ? "utensils" : "lock"} size={18} /> Plano alimentar
+            </button>
+            <button type="button" className={`${styles.tab} ${tab === "acesso" ? styles.tabActive : ""}`} onClick={() => setTab("acesso")}>
+              <Icon name="lock" size={18} /> Acesso
             </button>
           </div>
           <div className={styles.toolbarActions}>
@@ -665,6 +724,105 @@ export default function PerfilPaciente() {
               </div>
             </Card>
           ))}
+
+        {/* Acesso ao app */}
+        {tab === "acesso" && (
+          <div className={styles.dadosWrap}>
+            <Card elevation="sm" padding="lg">
+              <h3 className={styles.dadosSecTitle}>
+                <Icon name="user" size={16} /> Como {name.split(" ")[0]} entra no app
+              </h3>
+              {!hasLogin ? (
+                <Alert variant="error" title="Esta conta não tem login">
+                  Sem e-mail nem telefone, não há como ela entrar. Cadastre um contato na aba Dados.
+                </Alert>
+              ) : (
+                <div className={styles.fieldGrid}>
+                  <div className={styles.field}>
+                    <span className={styles.fieldLabel}>E-mail</span>
+                    <span className={styles.fieldValue}>{email}</span>
+                  </div>
+                  <div className={styles.field}>
+                    <span className={styles.fieldLabel}>Telefone</span>
+                    <span className={styles.fieldValue}>{phone ? maskPhone(phone) : "—"}</span>
+                  </div>
+                  <div className={styles.field}>
+                    <span className={styles.fieldLabel}>Último acesso</span>
+                    <span className={styles.fieldValue}>{lastLogin || "Nunca entrou"}</span>
+                  </div>
+                </div>
+              )}
+            </Card>
+
+            <Card elevation="sm" padding="lg">
+              <h3 className={styles.dadosSecTitle}>
+                <Icon name="lock" size={16} /> Senha de acesso
+              </h3>
+
+              {senhaOk && (
+                <Alert variant="success" title="Senha definida" onClose={() => setSenhaOk(false)}>
+                  Passe a senha para {name.split(" ")[0]}. Ela foi desconectada do app e precisa entrar de novo com a senha nova.
+                </Alert>
+              )}
+              {senhaErro && (
+                <Alert variant="error" title="Não foi possível salvar" onClose={() => setSenhaErro(null)}>
+                  {senhaErro}
+                </Alert>
+              )}
+
+              <form className={styles.acessoForm} onSubmit={salvarSenha} noValidate>
+                <FormField
+                  label="Nova senha"
+                  htmlFor="senha-paciente"
+                  helper="Mínimo 8 caracteres. Fica visível de propósito, para você conseguir passar para ela."
+                >
+                  <Input
+                    id="senha-paciente"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="Digite ou gere uma senha"
+                    value={senha}
+                    onChange={(e) => {
+                      setSenha(e.target.value);
+                      setSenhaOk(false);
+                      setCopiado(false);
+                    }}
+                    iconLeft={<Icon name="lock" size={20} />}
+                  />
+                </FormField>
+
+                <div className={styles.acessoRow}>
+                  <Button type="button" variant="ghost" onClick={gerarSenha} iconLeft={<Icon name="swap" size={18} />}>
+                    Gerar senha
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={copiarSenha}
+                    disabled={!senha}
+                    iconLeft={<Icon name={copiado ? "check" : "paperclip"} size={18} />}
+                  >
+                    {copiado ? "Copiado!" : "Copiar"}
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={senhaBusy}
+                    disabled={senha.length < 8 || !hasLogin}
+                    iconLeft={<Icon name="check" size={18} />}
+                  >
+                    Salvar senha
+                  </Button>
+                </div>
+              </form>
+
+              <p className={styles.acessoNote}>
+                A senha não fica guardada em lugar nenhum que dê para consultar depois — só o resumo dela, embaralhado.
+                Se esquecer, gere uma nova aqui.
+              </p>
+            </Card>
+          </div>
+        )}
 
         <Modal
           open={confirmDelete}
