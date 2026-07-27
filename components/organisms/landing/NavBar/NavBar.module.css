@@ -1,0 +1,118 @@
+.header {
+  position: fixed;
+  top: 20px;
+  right: 0;
+  left: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--page-padding);
+  pointer-events: none;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-24);
+  width: 100%;
+  max-width: 760px;
+  padding: 10px 12px 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-blur);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-sm);
+  pointer-events: auto;
+  transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
+}
+
+.pillScrolled {
+  background: var(--nav-blur);
+  border-color: var(--border-strong);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.links {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-24);
+  margin-right: auto;
+  list-style: none;
+}
+
+.link {
+  font-size: var(--text-body);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.link:hover {
+  color: var(--color-text);
+}
+
+.menuBtn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 36px;
+  height: 36px;
+  margin-left: auto;
+  padding: 8px;
+}
+
+.menuBtn span {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background: var(--color-text);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-sticky) - 10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 15, 18, 0.96);
+  backdrop-filter: blur(12px);
+}
+
+.mobileLinks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  list-style: none;
+  text-align: center;
+}
+
+.mobileLinks a {
+  font-size: clamp(24px, 5vw, 32px);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .links {
+    display: flex;
+  }
+
+  .menuBtn {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header {
+    top: 28px;
+  }
+}

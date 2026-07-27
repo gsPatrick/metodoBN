@@ -1,0 +1,4 @@
+.page {
+  overflow-x: clip;
+  max-width: 100%;
+}

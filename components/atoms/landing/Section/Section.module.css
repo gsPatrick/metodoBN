@@ -1,0 +1,18 @@
+.section {
+  padding: clamp(64px, 8vw, 120px) var(--page-padding);
+  scroll-margin-top: 96px;
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+}
+
+.bleed {
+  padding-inline: 0;
+}
+
+.bleed .inner {
+  max-width: none;
+}

@@ -1,0 +1,61 @@
+.section {
+  padding: clamp(64px, 8vw, 120px) var(--page-padding);
+  scroll-margin-top: 96px;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-32);
+  align-items: flex-start;
+  padding: clamp(40px, 6vw, 80px);
+  padding-top: clamp(56px, 8vw, 96px);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  color: var(--text-high);
+  background-color: var(--accent-strong);
+  background-image:
+    linear-gradient(135deg, rgba(16, 185, 129, 0.85) 0%, rgba(13, 148, 136, 0.7) 100%),
+    url("/images/cta-atmosphere.jpg");
+  background-size: cover;
+  background-position: center;
+  box-shadow: var(--shadow-accent), var(--inset-hairline);
+  min-height: clamp(360px, 50vh, 480px);
+}
+
+.eyebrow {
+  font-size: var(--text-caption);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.title {
+  max-width: 22ch;
+  font-size: clamp(28px, 4.5vw, 52px);
+  font-weight: var(--fw-bold);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.body {
+  max-width: 42ch;
+  font-size: var(--text-body-lg);
+  font-weight: var(--fw-medium);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+@media (min-width: 1024px) {
+  .title {
+    max-width: 26ch;
+  }
+}

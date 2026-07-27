@@ -1,0 +1,79 @@
+.sectionBg {
+  padding-block: clamp(72px, 9vw, 128px);
+}
+
+.header {
+  margin-bottom: clamp(40px, 6vw, 56px);
+}
+
+.label {
+  margin-bottom: var(--spacing-16);
+  font-size: var(--text-caption);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.title {
+  max-width: 22ch;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: var(--fw-bold);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+.grid {
+  display: grid;
+  gap: var(--spacing-24);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-16);
+  padding: clamp(32px, 4vw, 48px);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border-accent);
+  background: var(--color-surface);
+  min-height: 300px;
+}
+
+.subtitle {
+  font-size: var(--text-caption);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.cardTitle {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.body {
+  max-width: 38ch;
+  font-size: var(--text-body-lg);
+  font-weight: var(--fw-medium);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.detail {
+  margin-top: auto;
+  padding-top: var(--spacing-16);
+  font-size: var(--text-caption);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-low);
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-32);
+  }
+}

@@ -7,6 +7,8 @@ import Fruit from "@/components/atoms/Fruit/Fruit";
 
 /* template.js re-monta a cada navegação → a transição toca a cada troca de página */
 
+const SKIP_TRANSITION_PREFIXES = ["/nutricionista", "/teste"];
+
 const FRUITS = [
   { name: "banana", fallback: "banana" },
   { name: "maca", fallback: "apple" },
@@ -33,17 +35,26 @@ function effectiveTheme(pathname) {
 
 export default function Template({ children }) {
   const pathname = usePathname();
-  const [show, setShow] = useState(true);
+  const skipTransition = SKIP_TRANSITION_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  const [show, setShow] = useState(!skipTransition);
   const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     setTheme(effectiveTheme(pathname));
+    if (skipTransition) {
+      setShow(false);
+      return undefined;
+    }
     setShow(true);
     const t = setTimeout(() => setShow(false), 1450);
     return () => clearTimeout(t);
-  }, [pathname]);
+  }, [pathname, skipTransition]);
 
   const fruit = pickFruit(pathname);
+
+  if (skipTransition) {
+    return <div className={styles.page}>{children}</div>;
+  }
 
   return (
     <>
