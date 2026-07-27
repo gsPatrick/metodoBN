@@ -216,23 +216,31 @@ function DiaryView({ diary }) {
           <span className={`${styles.dayAdesao} ${styles[`adh_${tone(d.adesao)}`]}`}>Adesão {d.adesao}%</span>
         </div>
         {d.events.length === 0 ? (
+          /* Sem evento algum é dia sem registro — não dá para ler como adesão
+             total, que era o que a mensagem antiga dizia. */
           <div className={styles.dayEmpty}>
-            <Icon name="check" size={18} /> Seguiu o plano à risca o dia todo.
+            <Icon name="calendar" size={18} /> Nada registrado neste dia.
           </div>
         ) : (
           <ul className={styles.events}>
             {d.events.map((e, i) => (
               <li key={i} className={styles.event}>
                 <span
-                  className={`${styles.eventIcon} ${e.skip ? styles.eventSkip : e.add ? styles.eventAdd : styles.eventSwap}`}
+                  className={`${styles.eventIcon} ${
+                    e.skip ? styles.eventSkip : e.ate ? styles.eventAte : e.add ? styles.eventAdd : styles.eventSwap
+                  }`}
                 >
-                  <Icon name={e.skip ? "close" : e.add ? "plus" : "swap"} size={15} />
+                  <Icon name={e.skip ? "close" : e.ate ? "check" : e.add ? "plus" : "swap"} size={15} />
                 </span>
                 <span className={styles.eventText}>
                   <span className={styles.eventMeal}>{e.meal}</span>
                   {e.skip ? (
                     <span className={styles.eventDesc}>
                       Não comeu <b>{e.food}</b>
+                    </span>
+                  ) : e.ate ? (
+                    <span className={styles.eventDesc}>
+                      Comeu <b>{e.food}</b>
                     </span>
                   ) : e.add ? (
                     /* "comeu a mais": registrado pelo paciente fora do plano */

@@ -1025,6 +1025,11 @@
   background: var(--danger-soft);
   color: var(--danger);
 }
+/* Seguiu o plano: é o caso bom, e é a maior parte da lista. */
+.eventAte {
+  background: var(--success-soft);
+  color: var(--success);
+}
 /* "comeu a mais": não é erro nem troca — informa, sem alarmar. */
 .eventAdd {
   background: var(--info-soft);
