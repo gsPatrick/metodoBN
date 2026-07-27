@@ -1,0 +1,78 @@
+/* Tokens da landing — arquétipo Darkroom (archetypes.md §3), adaptado à marca.
+   Escopados no wrapper de propósito: o app force data-theme no boot, então a LP
+   não pode herdar os tokens globais. Componentes de components/lp usam só --lp-*. */
+.page {
+  /* Void com viés verde, para conversar com a marca em vez de preto neutro */
+  --lp-void: #0e1109;
+  --lp-ink-deep: #1d231a; /* pill escuro do CTA */
+  --lp-bone: #f4f5ef;
+  --lp-bone-dim: rgba(244, 245, 239, 0.66);
+  --lp-hairline: rgba(244, 245, 239, 0.16);
+
+  /* Acento único. O verde da marca (#607055) é escuro demais para brilhar sobre
+     void; este é o mesmo matiz elevado em luminosidade — a leitura
+     "bioluminescente" que o arquétipo pede, sem sair da paleta dela. */
+  --lp-glow: #c3d6ac;
+  --lp-sage: #607055; /* verde da marca, para as seções bone claras */
+
+  /* Seções bone (claras) — o arquétipo pede alternância escuro↔claro, e o blend
+     table manda clínica usar bone do Editorial para as seções de confiança. */
+  --lp-bone-deep: #eceee4;
+  --lp-graphite: #454b3e;
+  --lp-hairline-dark: rgba(35, 39, 31, 0.14);
+
+  --lp-font-body: var(--font-lp-body), system-ui, sans-serif;
+  --lp-font-mono: var(--font-lp-mono), ui-monospace, monospace;
+
+  --lp-space-2: 8px;
+  --lp-space-3: 12px;
+  --lp-space-4: 16px;
+  --lp-space-6: 24px;
+  --lp-space-8: 32px;
+  --lp-space-12: 48px;
+  --lp-space-16: 64px;
+
+  /* Recuo do painel do hero. Vira token porque o Header também depende dele:
+     ele precisa ficar DENTRO do painel, não na moldura clara. */
+  --lp-frame-inset: clamp(14px, 2.4vw, 34px);
+  --lp-radius-frame: clamp(18px, 2vw, 30px);
+  --lp-radius-lg: 16px;
+  --lp-radius-pill: 999px;
+  --lp-radius-cta: 12px;
+
+  --lp-page-max: 1440px;
+  --lp-page-padding: 20px;
+
+  --lp-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  min-height: 100svh;
+  background: var(--lp-void);
+  color: var(--lp-bone);
+  font-family: var(--lp-font-body);
+  overflow-x: clip;
+}
+
+.page :global(::selection) {
+  background: var(--lp-glow);
+  color: var(--lp-void);
+}
+
+/* Coluna de conteúdo compartilhada pelas seções. */
+.container {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: var(--lp-page-padding);
+}
+
+@media (min-width: 768px) {
+  .page {
+    --lp-page-padding: 32px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .page {
+    --lp-page-padding: 48px;
+  }
+}

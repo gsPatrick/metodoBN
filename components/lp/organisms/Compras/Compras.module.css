@@ -1,0 +1,148 @@
+/* Clara, seguindo a seção do app: as duas formam um bloco só sobre o mesmo
+   bone, e a tela escura do aparelho ganha recorte contra ele. */
+.secao {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  background: var(--lp-bone);
+  color: var(--lp-graphite);
+  /* Respiro menor: junto com o aparelho reduzido, faz a seção caber numa tela
+     sem exigir rolagem para ver a lista inteira. */
+  padding-block: clamp(48px, 5vw, 74px);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: grid;
+  gap: clamp(44px, 6vw, 80px);
+}
+
+/* Tela à esquerda e texto à direita — inverte a ordem da seção anterior, para
+   as duas não lerem como a mesma diagramação repetida. */
+@media (min-width: 1000px) {
+  .inner {
+    /* Colunas mais parelhas e vão menor: antes o texto ficava solto no meio,
+       com folga grande de um lado e do outro. */
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(32px, 3.6vw, 60px);
+  }
+}
+
+/* --- a tela --- */
+.telaWrap {
+  position: relative;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Halo no verde da marca — profundidade atrás do aparelho, sem moldura. */
+.brilho {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(150%, 620px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(96, 112, 85, 0.2) 0%, rgba(96, 112, 85, 0) 66%);
+  pointer-events: none;
+}
+
+.tela {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* Limitado também pela altura da tela: o aparelho encolhe o necessário para
+     aparecer inteiro, sem virar miniatura. */
+  max-width: min(320px, calc((100svh - 210px) * 420 / 900));
+  border-radius: clamp(20px, 2.2vw, 30px);
+  overflow: hidden;
+  border: 1px solid rgba(35, 39, 31, 0.1);
+  box-shadow: 0 0 0 5px rgba(35, 39, 31, 0.035), 0 40px 80px -36px rgba(20, 26, 18, 0.55);
+}
+
+.tela img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- texto --- */
+/* Sem max-width: o texto passa a ocupar a coluna inteira, encostando na mesma
+   borda direita do resto da página em vez de flutuar no meio. */
+.texto {
+  display: flex;
+  flex-direction: column;
+}
+
+.eyebrow {
+  margin: 0 0 var(--lp-space-4);
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-sage);
+}
+
+.titulo {
+  margin: 0;
+  font-weight: 250;
+  font-size: max(1.8rem, min(calc(1.8rem + 0.022 * (100vw - 27.5rem)), 2.9rem));
+  line-height: 1.06;
+  letter-spacing: -0.038em;
+  color: var(--lp-void);
+  text-wrap: pretty;
+}
+
+.destaque {
+  display: block;
+  margin-top: 0.26em;
+  color: var(--lp-sage);
+}
+
+.lead {
+  margin: var(--lp-space-5) 0 0;
+  font-size: 1rem;
+  line-height: 1.62;
+  max-width: 54ch;
+}
+
+/* --- pontos --- */
+.pontos {
+  margin: clamp(20px, 2.4vw, 28px) 0 0;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--lp-hairline-dark);
+}
+
+/* Respiro suficiente sem estufar a coluna — ela é o que define a altura
+   da seção, não o aparelho. */
+.ponto {
+  padding-block: var(--lp-space-4);
+  border-bottom: 1px solid var(--lp-hairline-dark);
+}
+
+.pontoTitulo {
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: -0.012em;
+  color: var(--lp-void);
+}
+
+.pontoCorpo {
+  margin: 9px 0 0;
+  font-size: 0.95rem;
+  line-height: 1.58;
+  max-width: 52ch;
+}
+
+@media (max-width: 999px) {
+  .tela {
+    max-width: 300px;
+  }
+}

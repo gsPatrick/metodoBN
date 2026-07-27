@@ -1,0 +1,140 @@
+/* Mesmo bone da seção do Método, como pedido — o card flutua sobre ele. */
+.secao {
+  position: relative;
+  z-index: 2;
+  background: var(--lp-bone);
+  padding-block: clamp(72px, 9vw, 140px);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+}
+
+/* Card atmosférico do arquétipo: cor sólida por baixo da imagem (para não
+   piscar branco enquanto ela carrega) e anel sutil no lugar de drop shadow.
+   Mais largo que alto, como na referência. */
+.card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(430px, 44vw, 680px);
+  padding: clamp(28px, 4vw, 60px);
+  border-radius: clamp(20px, 2.2vw, 32px);
+  background-color: #2c4438;
+  background-image: url("/images/cta-atmosphere.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 62% center;
+  box-shadow: 0 0 0 5px rgba(35, 39, 31, 0.04);
+}
+
+/* A imagem clareia muito à direita. Este degradê segura o texto no canto
+   esquerdo sem tocar no lado iluminado, que é o que dá a atmosfera. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(18, 30, 22, 0.8) 0%, rgba(18, 30, 22, 0.4) 40%, rgba(18, 30, 22, 0) 70%),
+    linear-gradient(180deg, rgba(18, 30, 22, 0.34) 0%, rgba(18, 30, 22, 0) 34%);
+}
+
+/* --- copy no topo à esquerda, ações empurradas para o pé --- */
+.conteudo {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: var(--lp-bone);
+}
+
+.titulo {
+  margin: 0;
+  font-weight: 250;
+  font-size: max(2rem, min(calc(2rem + 0.036 * (100vw - 27.5rem)), 4rem));
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  color: var(--lp-bone);
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+.texto {
+  margin: var(--lp-space-6) 0 0;
+  font-size: max(0.98rem, min(calc(0.98rem + 0.003 * (100vw - 27.5rem)), 1.12rem));
+  line-height: 1.6;
+  max-width: 44ch;
+  color: rgba(244, 245, 239, 0.8);
+}
+
+/* margin-top:auto joga as ações para o pé do card: a ação fecha o caminho de
+   leitura em vez de interrompê-lo logo depois do texto. */
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--lp-space-6);
+  margin-top: auto;
+  padding-top: clamp(32px, 5vw, 72px);
+}
+
+.secundario {
+  font-size: 15px;
+  color: var(--lp-bone);
+  border-bottom: 1px solid rgba(244, 245, 239, 0.34);
+  padding-bottom: 3px;
+  transition: border-color 260ms var(--lp-ease);
+}
+.secundario:hover {
+  border-color: var(--lp-bone);
+}
+.secundario:focus-visible {
+  outline: 2px solid var(--lp-glow);
+  outline-offset: 3px;
+}
+
+/* --- selo frosted no canto inferior direito ---
+   Na referência ele fica no topo, mas lá a nav é centralizada e o canto está
+   livre. Aqui o pill de navegação mora nesse canto, então os dois se cruzavam
+   durante a rolagem — e não dá para compensar com deslocamento fixo, porque a
+   posição do card muda conforme a página rola. */
+.selo {
+  position: absolute;
+  bottom: clamp(20px, 3vw, 44px);
+  right: clamp(20px, 3vw, 44px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 20px;
+  border-radius: var(--lp-radius-lg);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+}
+
+.seloNome {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--lp-void);
+}
+
+.seloCrn {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--lp-graphite);
+}
+
+@media (max-width: 560px) {
+  .selo {
+    display: none;
+  }
+}

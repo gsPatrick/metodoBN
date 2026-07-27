@@ -7,7 +7,9 @@ import Fruit from "@/components/atoms/Fruit/Fruit";
 
 /* template.js re-monta a cada navegação → a transição toca a cada troca de página */
 
-const SKIP_TRANSITION_PREFIXES = ["/nutricionista", "/teste"];
+// Páginas públicas de captação não levam a transição de fruta do app: quem
+// chega pela landing não é usuário do sistema, e a animação atrasa o hero.
+const SKIP_TRANSITION_PREFIXES = ["/nutricionista", "/teste", "/lp"];
 
 const FRUITS = [
   { name: "banana", fallback: "banana" },
@@ -52,8 +54,10 @@ export default function Template({ children }) {
 
   const fruit = pickFruit(pathname);
 
+  // Sem wrapper: styles.page existe só para o fade de entrada (opacity 0 por
+  // 0.72s). Nestas rotas isso atrasaria o hero e comeria a animação própria dele.
   if (skipTransition) {
-    return <div className={styles.page}>{children}</div>;
+    return children;
   }
 
   return (

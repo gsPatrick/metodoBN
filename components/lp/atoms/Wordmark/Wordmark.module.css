@@ -1,0 +1,84 @@
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--lp-font-body);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.icon {
+  display: block;
+  height: auto;
+  flex: none;
+}
+
+.word {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+.colon {
+  margin-right: 4px;
+  opacity: 0.5;
+}
+
+/* Sobre fundo claro (seções bone): tinta escura com o "BN" no verde da marca. */
+.onLight {
+  color: var(--lp-void);
+}
+.onLight .bn {
+  color: var(--lp-sage);
+}
+
+/* Sobre o vídeo: tudo claro — o verde da marca não teria contraste no escuro. */
+.onDark {
+  color: var(--lp-bone);
+}
+.onDark .bn {
+  color: var(--lp-bone);
+  opacity: 0.66;
+}
+/* O monograma tem traços cinza-claros que somem no escuro; clarear resolve. */
+.onDark .icon {
+  filter: brightness(0) invert(1);
+  opacity: 0.92;
+}
+
+.size_sm {
+  font-size: 15px;
+}
+.size_sm .icon {
+  width: 30px;
+}
+
+.size_md {
+  font-size: 17px;
+}
+.size_md .icon {
+  width: 38px;
+}
+
+.size_lg {
+  font-size: 22px;
+  gap: 13px;
+}
+.size_lg .icon {
+  width: 56px;
+}
+
+/* No rodapé a marca é o elemento de abertura e precisa passar da largura do
+   nome logo abaixo — mas crescendo na HORIZONTAL. Quem manda na altura é o
+   monograma, que é quadrado; por isso ele fica contido e o texto é quem cresce,
+   ganhando também um pouco de tracking para alongar o conjunto. */
+.size_xl {
+  font-size: clamp(30px, 3.4vw, 46px);
+  gap: clamp(14px, 1.5vw, 20px);
+  letter-spacing: -0.005em;
+}
+.size_xl .icon {
+  width: clamp(46px, 4.4vw, 60px);
+}

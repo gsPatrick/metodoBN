@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Icon from "@/components/atoms/Icon/Icon";
 import styles from "./InstallPrompt.module.css";
+
+// Páginas de captação: quem chega ainda não é paciente, então convidar a
+// instalar o app do paciente só compete com o CTA.
+const ROTAS_SEM_PROMPT = ["/lp"];
 
 function isStandalone() {
   if (typeof window === "undefined") return false;
@@ -15,9 +20,11 @@ function isIOS() {
 }
 
 export default function InstallPrompt() {
+  const pathname = usePathname();
   const [deferred, setDeferred] = useState(null);
   const [show, setShow] = useState(false);
   const [iosHelp, setIosHelp] = useState(false);
+  const emRotaDeCaptacao = ROTAS_SEM_PROMPT.some((r) => (pathname || "").startsWith(r));
 
   useEffect(() => {
     // registra o service worker (necessário p/ o prompt de instalação no Android)
@@ -76,7 +83,7 @@ export default function InstallPrompt() {
     }
   }
 
-  if (!show) return null;
+  if (!show || emRotaDeCaptacao) return null;
 
   return (
     <>

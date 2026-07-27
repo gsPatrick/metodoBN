@@ -1,0 +1,145 @@
+/* Seção clara: opaca de propósito, para cobrir o vídeo do hero em vez de
+   deixá-lo passar por trás. */
+.secao {
+  position: relative;
+  z-index: 2;
+  background: var(--lp-bone);
+  color: var(--lp-graphite);
+  /* Topo curto de propósito: a pergunta da seção anterior é a abertura desta,
+     então as duas precisam ler como um bloco só, não como seções separadas. */
+  padding-block: clamp(44px, 5vw, 72px) clamp(88px, 12vw, 190px);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: grid;
+  gap: clamp(56px, 7vw, 104px);
+}
+
+/* Assimetria: a coluna de texto não ocupa a largura toda, e as etapas se
+   alinham à direita dela. Grade de colunas iguais é a leitura junior. */
+@media (min-width: 1000px) {
+  .inner {
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+    /* A coluna de texto é mais curta que a lista de etapas. Centralizada, ela
+       divide a sobra em cima e embaixo em vez de deixar um vão só no pé. */
+    align-items: center;
+    gap: clamp(48px, 6vw, 96px);
+  }
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-6);
+  max-width: 46ch;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-sage);
+}
+
+.titulo {
+  margin: 0;
+  font-weight: 250;
+  font-size: max(1.9rem, min(calc(1.9rem + 0.026 * (100vw - 27.5rem)), 3.4rem));
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: var(--lp-void);
+  text-wrap: pretty;
+}
+
+/* A segunda metade da frase é a virada — ganha peso e a cor da marca. */
+.destaque {
+  display: block;
+  margin-top: 0.3em;
+  color: var(--lp-sage);
+}
+
+.texto {
+  margin: 0;
+  font-size: max(1rem, min(calc(1rem + 0.003 * (100vw - 27.5rem)), 1.15rem));
+  line-height: 1.62;
+  max-width: 54ch;
+}
+
+/* --- etapas --- */
+.etapas {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--lp-hairline-dark);
+}
+
+.etapa {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--lp-space-4) var(--lp-space-6);
+  padding-block: clamp(28px, 3.4vw, 44px);
+  border-bottom: 1px solid var(--lp-hairline-dark);
+}
+
+@media (min-width: 720px) {
+  .etapa {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--lp-space-8);
+  }
+}
+
+.numero {
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--lp-sage);
+  padding-top: 0.45em;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.etapaTitulo {
+  margin: 0;
+  font-weight: 300;
+  font-size: max(1.4rem, min(calc(1.4rem + 0.008 * (100vw - 27.5rem)), 1.9rem));
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--lp-void);
+}
+
+.etapaCorpo {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.detalhe {
+  font-family: var(--lp-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lp-graphite);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+/* No mobile o detalhe desce sob o texto, alinhado com ele. */
+@media (max-width: 719px) {
+  .detalhe {
+    grid-column: 2;
+    white-space: normal;
+  }
+}

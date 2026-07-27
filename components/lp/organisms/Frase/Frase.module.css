@@ -1,0 +1,87 @@
+.secao {
+  position: relative;
+  z-index: 2;
+  padding-block: clamp(88px, 11vw, 160px) 0;
+}
+
+.claro {
+  background: var(--lp-bone);
+  color: var(--lp-void);
+}
+.escuro {
+  background: var(--lp-void);
+  color: var(--lp-bone);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.frase {
+  margin: 0;
+  text-align: center;
+  font-weight: 300;
+  font-size: max(1.9rem, min(calc(1.9rem + 0.032 * (100vw - 27.5rem)), 3.8rem));
+  /* Folga para acentos altos (til, circunflexo) na primeira linha. */
+  line-height: 1.16;
+  letter-spacing: -0.04em;
+  max-width: 24ch;
+  text-wrap: balance;
+}
+
+.claro .marca {
+  color: var(--lp-sage);
+}
+.escuro .marca {
+  color: var(--lp-glow);
+}
+
+/* Traço de passagem: cresce de cima para baixo ao entrar na tela. */
+.traco {
+  display: block;
+  width: 1px;
+  height: clamp(56px, 9vw, 130px);
+  margin-top: clamp(32px, 4vw, 56px);
+  transform-origin: top;
+  animation: descer 900ms var(--lp-ease) both;
+  animation-timeline: view();
+  animation-range: entry 20% cover 42%;
+}
+
+.claro .traco {
+  background: linear-gradient(180deg, var(--lp-sage) 0%, rgba(96, 112, 85, 0) 100%);
+}
+.escuro .traco {
+  background: linear-gradient(180deg, var(--lp-glow) 0%, rgba(195, 214, 172, 0) 100%);
+}
+
+@keyframes descer {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Sem animação vinculada ao scroll (Safari/Firefox), o traço aparece na carga
+   em vez de ficar invisível. */
+@supports not (animation-timeline: view()) {
+  .traco {
+    animation: descer 900ms var(--lp-ease) 300ms both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .traco {
+    animation: none;
+  }
+}

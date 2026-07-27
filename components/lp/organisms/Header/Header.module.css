@@ -1,0 +1,250 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  /* Mesma coluna do .inner do Hero (max-width + margem automática). Sem isso o
+     header ocupa a largura toda e a logo desalinha do texto em telas largas. */
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-6);
+  /* Desloca pelo recuo do painel: o header mora DENTRO dele, não na moldura
+     clara — onde o texto branco desapareceria. */
+  padding: calc(var(--lp-frame-inset) + 24px) calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  pointer-events: none;
+}
+
+.header > * {
+  pointer-events: auto;
+}
+
+/* A marca também mora num pill. Sem fundo, ela colidia com o texto das seções
+   que passam por baixo do header fixo. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  height: 48px;
+  padding-inline: 16px;
+  border-radius: var(--lp-radius-pill);
+  border: 1px solid transparent;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background-color 320ms var(--lp-ease), border-color 320ms var(--lp-ease);
+}
+
+.onDark .brand {
+  background: rgba(244, 245, 239, 0.14);
+  border-color: rgba(244, 245, 239, 0.16);
+}
+.onLight .brand {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Pill frosted do arquétipo — links + CTA num bloco só, à direita. */
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: var(--lp-radius-pill);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background-color 320ms var(--lp-ease), border-color 320ms var(--lp-ease);
+  border: 1px solid transparent;
+}
+
+.onDark .pill {
+  background: rgba(244, 245, 239, 0.14);
+  border-color: rgba(244, 245, 239, 0.16);
+}
+.onLight .pill {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding-inline: 16px;
+  border-radius: var(--lp-radius-pill);
+  font-family: var(--lp-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 220ms var(--lp-ease), color 220ms var(--lp-ease);
+}
+
+.onDark .link {
+  color: rgba(244, 245, 239, 0.82);
+}
+.onDark .link:hover {
+  color: var(--lp-bone);
+  background: rgba(244, 245, 239, 0.1);
+}
+.onLight .link {
+  color: #4a5043;
+}
+.onLight .link:hover {
+  color: var(--lp-void);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* CTA do header: pill escuro sólido. O acento (círculo glow) fica só no hero,
+   para manter uma superfície de acento por viewport. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding-inline: 18px;
+  border-radius: var(--lp-radius-pill);
+  background: var(--lp-ink-deep);
+  color: var(--lp-bone);
+  font-family: var(--lp-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 260ms var(--lp-ease);
+}
+.cta:hover {
+  background: #2a3225;
+}
+
+.link:focus-visible,
+.cta:focus-visible,
+.brand:focus-visible,
+.burger:focus-visible {
+  outline: 2px solid var(--lp-glow);
+  outline-offset: 3px;
+}
+
+/* --- mobile --- */
+.burger {
+  display: none;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.burgerLine {
+  display: block;
+  width: 20px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 300ms var(--lp-ease);
+}
+.onDark .burger {
+  color: var(--lp-bone);
+}
+.onLight .burger {
+  color: var(--lp-void);
+}
+.burgerTop {
+  transform: translateY(3.25px) rotate(45deg);
+}
+.burgerBottom {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
+
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Centralizado nos dois eixos. */
+  align-items: center;
+  text-align: center;
+  gap: var(--lp-space-8);
+  padding: var(--lp-page-padding);
+  /* Vidro em vez de preto sólido: o conteúdo da página continua insinuado
+     atrás, e o menu lê como camada sobreposta, não como outra tela. */
+  background: rgba(14, 17, 9, 0.66);
+  backdrop-filter: blur(26px) saturate(1.1);
+  -webkit-backdrop-filter: blur(26px) saturate(1.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 320ms var(--lp-ease), visibility 320ms;
+}
+.sheetOpen {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sheetMenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--lp-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sheetItem {
+  font-size: clamp(30px, 9vw, 42px);
+  font-weight: 250;
+  letter-spacing: -0.035em;
+  color: var(--lp-bone);
+}
+.sheetCta {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding-inline: 24px;
+  border-radius: var(--lp-radius-cta);
+  background: var(--lp-glow);
+  color: var(--lp-void);
+  font-family: var(--lp-font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .pill {
+    display: none;
+  }
+  .burger {
+    display: flex;
+  }
+  .header {
+    padding-inline: var(--lp-page-padding);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill,
+  .link,
+  .cta,
+  .sheet,
+  .burgerLine {
+    transition-duration: 0.01ms;
+  }
+}

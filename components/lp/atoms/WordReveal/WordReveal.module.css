@@ -1,0 +1,19 @@
+.reveal {
+  display: inline;
+}
+
+/* Sem will-change: ele promove cada palavra a uma camada própria, e a
+   rasterização dessa camada recorta a tinta que passa da caixa do elemento —
+   era o que decepava o til de "anotações". São poucos elementos e propriedades
+   baratas; a transição fica suave sem o hint. */
+.palavra {
+  display: inline-block;
+  transition: opacity 0.7s var(--lp-ease), filter 0.7s var(--lp-ease),
+    transform 0.7s var(--lp-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palavra {
+    transition: none;
+  }
+}

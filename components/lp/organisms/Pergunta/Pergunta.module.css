@@ -1,0 +1,49 @@
+/* Opaca, para cobrir o vídeo do hero em vez de deixá-lo passar por trás.
+   Sem padding embaixo — quem dá o respiro até o conteúdo é o padding-top da
+   seção seguinte, para as duas lerem como um bloco só. */
+.secao {
+  position: relative;
+  z-index: 2;
+  padding-block: clamp(72px, 8vw, 118px) 0;
+}
+
+.claro {
+  background: var(--lp-bone);
+  color: var(--lp-void);
+}
+.escuro {
+  background: var(--lp-void);
+  color: var(--lp-bone);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: flex;
+  justify-content: center;
+}
+
+/* Uma linha só. O tamanho é preso em vw com teto em rem: o vw garante que a
+   frase caiba na largura em qualquer tela, e o teto impede que ela estoure a
+   coluna quando o monitor passa da largura máxima do conteúdo. */
+.pergunta {
+  margin: 0;
+  display: block;
+  text-align: center;
+  white-space: nowrap;
+  font-weight: 300;
+  /* Variáveis vindas do componente, derivadas do comprimento da frase. */
+  font-size: clamp(1.3rem, var(--pergunta-vw, 6.4vw), var(--pergunta-max, 6.2rem));
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+/* Verde da marca no claro; a versão elevada no escuro, onde o sage some. */
+.claro .marca {
+  color: var(--lp-sage);
+}
+.escuro .marca {
+  color: var(--lp-glow);
+}

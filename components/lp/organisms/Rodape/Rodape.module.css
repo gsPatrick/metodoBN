@@ -1,0 +1,267 @@
+.rodape {
+  position: relative;
+  /* O bone da seção anterior aparece nos cantos arredondados do painel. */
+  background: var(--lp-bone);
+}
+
+/* Painel escuro com o topo arredondado, apoiado sobre o claro de cima. */
+.painel {
+  position: relative;
+  z-index: 2;
+  background: var(--lp-void);
+  color: var(--lp-bone-dim);
+  border-radius: clamp(24px, 3vw, 44px) clamp(24px, 3vw, 44px) 0 0;
+  padding-block: clamp(56px, 7vw, 96px) clamp(28px, 3.4vw, 44px);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--lp-space-4);
+}
+
+/* Agendamento embutido na frase: o nome dela é o próprio link. */
+.linkCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--lp-bone);
+  white-space: nowrap;
+}
+
+.linkTexto {
+  font-weight: 500;
+  border-bottom: 1px solid rgba(244, 245, 239, 0.42);
+  padding-bottom: 2px;
+  transition: border-color 240ms var(--lp-ease);
+}
+
+.linkSeta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(244, 245, 239, 0.34);
+  transition: background-color 240ms var(--lp-ease), border-color 240ms var(--lp-ease),
+    color 240ms var(--lp-ease), transform 240ms var(--lp-ease);
+}
+.linkSeta svg {
+  width: 14px;
+  height: 14px;
+}
+
+.linkCta:hover .linkTexto {
+  border-color: var(--lp-bone);
+}
+.linkCta:hover .linkSeta {
+  background: var(--lp-glow);
+  border-color: var(--lp-glow);
+  color: var(--lp-void);
+  transform: translateX(3px);
+}
+.linkCta:focus-visible {
+  outline: 2px solid var(--lp-glow);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.titulo {
+  margin: clamp(28px, 3.6vw, 44px) 0 0;
+  text-align: center;
+  font-weight: 250;
+  font-size: max(1.8rem, min(calc(1.8rem + 0.026 * (100vw - 27.5rem)), 3.2rem));
+  line-height: 1.08;
+  letter-spacing: -0.038em;
+  color: var(--lp-bone);
+  text-wrap: balance;
+}
+
+.apoio {
+  margin: var(--lp-space-6) 0 0;
+  text-align: center;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  max-width: 58ch;
+}
+
+/* --- barra de navegação e ações --- */
+.barraNav {
+  width: 100%;
+  margin-top: clamp(48px, 6vw, 86px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-6) var(--lp-space-8);
+}
+
+.navLista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-6);
+}
+
+.navLink {
+  font-size: 0.98rem;
+  color: var(--lp-bone-dim);
+  transition: color 220ms var(--lp-ease);
+}
+.navLink:hover {
+  color: var(--lp-bone);
+}
+.navLink:focus-visible,
+.botaoCheio:focus-visible {
+  outline: 2px solid var(--lp-glow);
+  outline-offset: 3px;
+  border-radius: var(--lp-radius-pill);
+}
+
+/* Único preenchimento de acento no rodapé, e agora a única ação daqui. */
+.botaoCheio {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding-inline: 24px;
+  border-radius: var(--lp-radius-pill);
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid var(--lp-glow);
+  background: var(--lp-glow);
+  color: var(--lp-void);
+  transition: background-color 240ms var(--lp-ease), border-color 240ms var(--lp-ease);
+}
+.botaoCheio:hover {
+  background: #d3e3bf;
+  border-color: #d3e3bf;
+}
+
+/* --- faixa do vídeo --- */
+.faixa {
+  position: relative;
+  height: clamp(200px, 24vw, 300px);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: clamp(18px, 2.6vw, 30px);
+}
+
+.video {
+  position: fixed;
+  /* 0, e não -1: negativo ficaria atrás do fundo do wrapper da página (o fundo
+     de um elemento em fluxo pinta acima de filhos negativos) e o vídeo
+     desapareceria. Em 0 ele fica abaixo das seções, todas em z-index 2, e
+     aparece só nesta faixa. */
+  z-index: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(200px, 24vw, 300px);
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.66) saturate(0.94);
+  pointer-events: none;
+}
+
+.veu {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(11, 14, 8, 0.7) 0%, rgba(11, 14, 8, 0) 66%);
+  pointer-events: none;
+}
+
+.barra {
+  position: relative;
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px var(--lp-space-8);
+}
+
+.credito {
+  margin: 0;
+  font-family: var(--lp-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: rgba(244, 245, 239, 0.82);
+}
+
+/* Minimalista: mesmo corpo do crédito, um tom abaixo, e só o nome acende no
+   hover — sem botão, sem ícone, sem sublinhado permanente. */
+.autor {
+  font-family: var(--lp-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: rgba(244, 245, 239, 0.5);
+  transition: color 240ms var(--lp-ease);
+}
+
+.autorNome {
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color 240ms var(--lp-ease), border-color 240ms var(--lp-ease);
+}
+
+.autor:hover {
+  color: rgba(244, 245, 239, 0.72);
+}
+.autor:hover .autorNome {
+  color: var(--lp-bone);
+  border-color: rgba(244, 245, 239, 0.4);
+}
+.autor:focus-visible {
+  outline: 2px solid var(--lp-glow);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+@media (max-width: 640px) {
+  /* Empilhado e centralizado: o resto do rodapé é centralizado, e à esquerda
+     o botão ficava desalinhado de tudo acima dele. */
+  .barraNav {
+    flex-direction: column;
+    align-items: center;
+  }
+  .navLista {
+    justify-content: center;
+  }
+  /* Botão largo: no celular a ação é tocada com o polegar, e uma pill estreita
+     no meio da tela tem alvo pequeno demais. */
+  .botaoCheio {
+    width: 100%;
+    max-width: 320px;
+    height: 50px;
+    justify-content: center;
+  }
+  .barra {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .linkCta:hover .linkSeta {
+    transform: none;
+  }
+}

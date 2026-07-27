@@ -1,0 +1,72 @@
+/* Bone, como a seção do Método. Vem depois do bloco escuro do "Sobre", então
+   retoma a alternância — e entrega o banner de CTA, que é um card escuro
+   flutuando sobre este mesmo bone. */
+.secao {
+  position: relative;
+  z-index: 2;
+  background: var(--lp-bone);
+  color: var(--lp-graphite);
+  padding-block: clamp(88px, 12vw, 180px) clamp(24px, 3vw, 48px);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: grid;
+  gap: clamp(40px, 5vw, 72px);
+}
+
+/* Mesma assimetria da seção do Método, para as duas rimarem. */
+@media (min-width: 1000px) {
+  .inner {
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+    align-items: start;
+    gap: clamp(48px, 6vw, 96px);
+  }
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-6);
+  max-width: 40ch;
+}
+
+/* A coluna de título acompanha a rolagem enquanto a lista é percorrida. */
+@media (min-width: 1000px) {
+  .intro {
+    position: sticky;
+    top: clamp(120px, 14vw, 180px);
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-sage);
+}
+
+.titulo {
+  margin: 0;
+  font-weight: 250;
+  font-size: max(1.9rem, min(calc(1.9rem + 0.026 * (100vw - 27.5rem)), 3.4rem));
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: var(--lp-void);
+  text-wrap: pretty;
+}
+
+.destaque {
+  display: block;
+  margin-top: 0.3em;
+  color: var(--lp-sage);
+}
+
+.lista {
+  border-top: 1px solid var(--lp-hairline-dark);
+}

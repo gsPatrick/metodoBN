@@ -1,0 +1,122 @@
+.secao {
+  position: relative;
+  z-index: 2;
+  background: var(--lp-void);
+  color: var(--lp-bone-dim);
+  /* Topo curto: a pergunta anterior é a abertura desta seção. */
+  padding-block: clamp(44px, 5vw, 72px) clamp(88px, 12vw, 190px);
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--lp-page-max);
+  margin-inline: auto;
+  padding-inline: calc(var(--lp-frame-inset) + var(--lp-page-padding));
+  display: grid;
+  gap: clamp(36px, 5vw, 72px);
+}
+
+/* Assimétrico: o retrato ocupa menos que o texto. */
+@media (min-width: 900px) {
+  .inner {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    align-items: center;
+    gap: clamp(40px, 5.5vw, 88px);
+  }
+}
+
+.retrato {
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--lp-radius-frame);
+  background: #1a1f16;
+}
+
+.retrato img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.eyebrow {
+  margin: 0 0 var(--lp-space-4);
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-glow);
+}
+
+.nome {
+  margin: 0;
+  font-weight: 250;
+  font-size: max(2.2rem, min(calc(2.2rem + 0.036 * (100vw - 27.5rem)), 4rem));
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--lp-bone);
+}
+
+.crn {
+  margin: 14px 0 0;
+  font-family: var(--lp-font-mono);
+  font-size: max(0.9rem, min(calc(0.9rem + 0.004 * (100vw - 27.5rem)), 1.15rem));
+  letter-spacing: 0.06em;
+  color: var(--lp-bone);
+  opacity: 0.88;
+}
+
+/* A frase dela — o único trecho em corpo grande depois do nome. */
+.frase {
+  margin: clamp(28px, 3.4vw, 44px) 0 0;
+  font-weight: 300;
+  font-size: max(1.25rem, min(calc(1.25rem + 0.012 * (100vw - 27.5rem)), 1.9rem));
+  line-height: 1.28;
+  letter-spacing: -0.025em;
+  color: var(--lp-bone);
+  max-width: 34ch;
+  text-wrap: pretty;
+}
+
+.corpo {
+  margin: var(--lp-space-6) 0 0;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  max-width: 56ch;
+}
+
+.fatos {
+  margin: clamp(32px, 4vw, 52px) 0 0;
+  padding: var(--lp-space-6) 0 0;
+  border-top: 1px solid var(--lp-hairline);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-8) clamp(40px, 6vw, 88px);
+  width: 100%;
+}
+
+.fato {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fatoRotulo {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.fatoValor {
+  margin: 0;
+  font-size: 1.02rem;
+  color: var(--lp-bone);
+}
