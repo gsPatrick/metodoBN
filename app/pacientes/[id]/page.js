@@ -21,7 +21,7 @@ import Modal from "@/components/molecules/Modal/Modal";
 import { useUpload, downloadPlanPdf } from "@/components/providers/UploadProvider";
 import { apiGet, apiPost, apiPatch, apiDelete, getCurrentUser } from "@/lib/api";
 import { categorizeShopping, categorizeShoppingItems, ingredientsFromMeals } from "@/lib/shopping";
-import { montaDiario, montaCompras, ultimosDias, isoDia } from "@/lib/atividade";
+import { montaDiario, montaCompras, diasDoDiario, isoDia } from "@/lib/atividade";
 
 const SEX_LABEL = { male: "Masculino", female: "Feminino", other: "Outro" };
 const pad = (n) => String(n).padStart(2, "0");
@@ -213,7 +213,8 @@ export default function PerfilPaciente() {
   // O que o paciente registrou no app dele: consumo do dia a dia e compras.
   // Vem depois do plano porque depende dele para nomear refeições e alimentos.
   async function carregaAtividade(dp) {
-    const dias = ultimosDias(7);
+    // Mesmo intervalo que o diário exibe: não busca dia anterior ao plano.
+    const dias = diasDoDiario(dp);
     const from = isoDia(dias[0]);
     const to = isoDia(dias[dias.length - 1]);
 
