@@ -20,7 +20,8 @@ import EmptyState from "@/components/molecules/EmptyState/EmptyState";
 import Modal from "@/components/molecules/Modal/Modal";
 import { useUpload, downloadPlanPdf } from "@/components/providers/UploadProvider";
 import { apiGet, apiPost, apiPatch, apiDelete, getCurrentUser } from "@/lib/api";
-import { categorizeShopping, ingredientsFromMeals } from "@/lib/shopping";
+import { categorizeShopping, categorizeShoppingItems, ingredientsFromMeals } from "@/lib/shopping";
+import { montaDiario, montaCompras, ultimosDias, isoDia } from "@/lib/atividade";
 
 const SEX_LABEL = { male: "Masculino", female: "Feminino", other: "Outro" };
 const pad = (n) => String(n).padStart(2, "0");
@@ -145,6 +146,7 @@ export default function PerfilPaciente() {
   const [error, setError] = useState(null);
   const [anamnesis, setAnamnesis] = useState(undefined); // undefined=carregando, null=nenhuma
   const [plan, setPlan] = useState(undefined); // undefined=carregando, null=nenhum
+  const [bought, setBought] = useState(null); // itens já comprados pelo paciente
   const [tab, setTab] = useState("geral");
   const [obs, setObs] = useState("");
   const [obsSaved, setObsSaved] = useState(false);
@@ -208,6 +210,41 @@ export default function PerfilPaciente() {
     }
   }
 
+  // O que o paciente registrou no app dele: consumo do dia a dia e compras.
+  // Vem depois do plano porque depende dele para nomear refeições e alimentos.
+  async function carregaAtividade(dp) {
+    const dias = ultimosDias(7);
+    const from = isoDia(dias[0]);
+    const to = isoDia(dias[dias.length - 1]);
+
+    try {
+      const r = await apiGet(`/meal-logs?patientProfileId=${id}&from=${from}&to=${to}`);
+      const diary = montaDiario(dp, r && r.logs, r && r.extras);
+      setPlan((p) => (p ? { ...p, diary } : p));
+    } catch {
+      /* sem diário: a aba mostra o estado vazio */
+    }
+
+    try {
+      const listas = await apiGet(`/shopping-lists?patientProfileId=${id}&withItems=1`);
+      const arr = Array.isArray(listas) ? listas : [];
+      const ativa = arr.find((l) => l.status === "active");
+      const purchases = montaCompras(arr);
+      setPlan((p) => {
+        if (!p) return p;
+        // Com lista no servidor, ela substitui a derivada do plano: só assim os
+        // nomes batem com o que o paciente marcou.
+        const shopping = ativa && Array.isArray(ativa.items) ? categorizeShoppingItems(ativa.items) : p.shopping;
+        return { ...p, purchases, shopping };
+      });
+      if (ativa && Array.isArray(ativa.items)) {
+        setBought(ativa.items.filter((i) => i.isChecked).map((i) => i.name));
+      }
+    } catch {
+      /* sem lista no servidor: mantém a lista derivada do plano */
+    }
+  }
+
   useEffect(() => {
     loadProfile();
     apiGet(`/anamnesis/${id}`)
@@ -218,6 +255,7 @@ export default function PerfilPaciente() {
         if (Array.isArray(list) && list.length) {
           const full = await apiGet(`/diet-plans/${list[0].id}`);
           setPlan(mapPlan(full));
+          carregaAtividade(full);
         } else {
           setPlan(null);
         }
@@ -353,7 +391,10 @@ export default function PerfilPaciente() {
 
   // Quando o import (mesmo iniciado e deixado em background) conclui, aplica o plano.
   useEffect(() => {
-    if (up && up.status === "done" && up.plan) setPlan(mapPlan(up.plan));
+    if (up && up.status === "done" && up.plan) {
+      setPlan(mapPlan(up.plan));
+      carregaAtividade(up.plan);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [up && up.status]);
 
@@ -694,7 +735,7 @@ export default function PerfilPaciente() {
                   Baixar PDF
                 </Button>
               </div>
-              <PlanoView plan={plan} patientId={id} />
+              <PlanoView plan={plan} patientId={id} bought={bought} />
             </>
           ) : up && up.status === "uploading" ? (
             <Card elevation="sm" padding="lg">

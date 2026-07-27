@@ -153,8 +153,15 @@ function tone(a) {
 }
 
 function DiaryView({ diary }) {
-  const todayIndex = 3; // Qui 26/06 (hoje no exemplo)
-  const [day, setDay] = useState(todayIndex);
+  // Quem marca o dia de hoje é o próprio dado (`isToday`); antes era um índice
+  // fixo, herdado do exemplo, que apontava para o dia errado com dados reais.
+  const todayIndex = (diary || []).findIndex((x) => x.isToday);
+  const [day, setDay] = useState(todayIndex < 0 ? 0 : todayIndex);
+
+  // O diário chega depois do plano: quando ele preenche, abre no dia de hoje.
+  useEffect(() => {
+    if (todayIndex >= 0) setDay(todayIndex);
+  }, [todayIndex]);
 
   if (!diary || !diary.length) {
     return (
@@ -216,14 +223,21 @@ function DiaryView({ diary }) {
           <ul className={styles.events}>
             {d.events.map((e, i) => (
               <li key={i} className={styles.event}>
-                <span className={`${styles.eventIcon} ${e.skip ? styles.eventSkip : styles.eventSwap}`}>
-                  <Icon name={e.skip ? "close" : "swap"} size={15} />
+                <span
+                  className={`${styles.eventIcon} ${e.skip ? styles.eventSkip : e.add ? styles.eventAdd : styles.eventSwap}`}
+                >
+                  <Icon name={e.skip ? "close" : e.add ? "plus" : "swap"} size={15} />
                 </span>
                 <span className={styles.eventText}>
                   <span className={styles.eventMeal}>{e.meal}</span>
                   {e.skip ? (
                     <span className={styles.eventDesc}>
                       Não comeu <b>{e.food}</b>
+                    </span>
+                  ) : e.add ? (
+                    /* "comeu a mais": registrado pelo paciente fora do plano */
+                    <span className={styles.eventDesc}>
+                      Comeu a mais <b>{e.food}</b>
                     </span>
                   ) : (
                     <span className={styles.eventDesc}>
@@ -248,29 +262,33 @@ const SUBTABS = [
   { key: "receitas", label: "Receitas", icon: "clipboard" }
 ];
 
-export default function PlanoView({ plan, patientId, tabs = null, consumed = null }) {
+// `bought` (nomes já comprados) pode vir de fora: na tela da nutricionista ele
+// vem da lista do servidor, que é o que o paciente marcou no aparelho dele.
+export default function PlanoView({ plan, patientId, tabs = null, consumed = null, bought: boughtProp = null }) {
   const { totals, meals, shopping, recipes, prescritoEm, diary, purchases } = plan;
   const allowed = SUBTABS.filter((s) => !tabs || tabs.includes(s.key));
   const [sub, setSub] = useState(allowed[0].key);
   const [recipe, setRecipe] = useState(null);
-  const [bought, setBought] = useState([]);
+  const [boughtLocal, setBoughtLocal] = useState([]);
+  const bought = boughtProp || boughtLocal;
 
   useEffect(() => {
+    if (boughtProp) return; // já veio pronto do servidor
     try {
       const raw = localStorage.getItem(`bn_compras_${patientId}`);
       if (raw) {
         const d = JSON.parse(raw);
         if (d.bought) {
-          setBought(d.bought);
+          setBoughtLocal(d.bought);
           return;
         }
       }
     } catch {
       /* ignora */
     }
-    setBought([]); // sem marcações: a nutri vê a lista completa (o paciente marca no app dele)
+    setBoughtLocal([]); // sem marcações: mostra a lista completa
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patientId]);
+  }, [patientId, boughtProp]);
 
   function findRecipe(name) {
     const n = norm(name);

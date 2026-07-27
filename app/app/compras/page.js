@@ -10,8 +10,9 @@ import FinishFlow from "@/components/molecules/FinishFlow/FinishFlow";
 import Skeleton from "@/components/atoms/Skeleton/Skeleton";
 import EmptyState from "@/components/molecules/EmptyState/EmptyState";
 import StreetNav from "@/components/organisms/StreetNav/StreetNav";
-import { apiGet } from "@/lib/api";
-import { categorizeShopping, ingredientsFromMeals } from "@/lib/shopping";
+import { apiGet, apiPost, apiPatch, apiDelete, getProfileId } from "@/lib/api";
+import { categorizeShoppingItems, ingredientsFromMeals, CATEGORIA_EXTRA } from "@/lib/shopping";
+import { montaHistorico } from "@/lib/atividade";
 
 const TIPS = [
   { icon: "leaf", text: "Prefira frutas e verduras da estação — mais frescas e baratas." },
@@ -99,12 +100,52 @@ async function findMarket(lat, lon) {
   return null;
 }
 
+// Itens sintéticos para o modo local (sem id do servidor): o resto da tela
+// trabalha sempre com objetos, então o fallback usa o mesmo formato.
+function itensLocais(nomes) {
+  return (nomes || [])
+    .map((n) => (typeof n === "string" ? n : n && n.name) || "")
+    .filter((n) => n.trim())
+    .map((name) => ({ id: null, name, category: null, isChecked: false }));
+}
+
+// Modo local: recupera do aparelho o que já estava marcado e os extras digitados.
+function restauraLocal(base) {
+  try {
+    const raw = localStorage.getItem("bn_compras_me");
+    if (!raw) return base;
+    const d = JSON.parse(raw) || {};
+    const marcados = new Set(d.bought || []);
+    const extras = (d.extras || []).map((name) => ({
+      id: null,
+      name,
+      category: CATEGORIA_EXTRA,
+      isChecked: true,
+    }));
+    return base.map((i) => ({ ...i, isChecked: marcados.has(i.name) })).concat(extras);
+  } catch {
+    return base;
+  }
+}
+
+// Espelha o estado no aparelho — só usado no modo local.
+function persisteLocal(arr) {
+  try {
+    const bought = arr.filter((i) => i.category !== CATEGORIA_EXTRA && i.isChecked).map((i) => i.name);
+    const extras = arr.filter((i) => i.category === CATEGORIA_EXTRA).map((i) => i.name);
+    localStorage.setItem("bn_compras_me", JSON.stringify({ bought, extras }));
+  } catch {
+    /* ignora */
+  }
+}
+
 export default function ComprasPage() {
   const router = useRouter();
-  const [shopping, setShopping] = useState(undefined); // undefined=carregando, null=sem plano
+  const [itens, setItens] = useState(undefined); // undefined=carregando, null=sem plano
+  const [lista, setLista] = useState(null); // lista do servidor (null no modo local)
+  const [modoLocal, setModoLocal] = useState(false);
+  const [historico, setHistorico] = useState([]);
   const [phase, setPhase] = useState("intro"); // intro | map | list | done
-  const [bought, setBought] = useState([]);
-  const [extras, setExtras] = useState([]);
   const [newExtra, setNewExtra] = useState("");
   const [finished, setFinished] = useState(false);
   const [ready, setReady] = useState(false);
@@ -116,22 +157,105 @@ export default function ComprasPage() {
   const [arrived, setArrived] = useState(false);
   const [svFailed, setSvFailed] = useState(false); // fallback p/ embed se o Street View JS falhar
 
-  // plano → lista de compras (categorizada)
+  async function carregaHistorico(active = true) {
+    try {
+      const feitas = await apiGet("/shopping-lists?status=completed&withItems=1");
+      if (active) setHistorico(montaHistorico(Array.isArray(feitas) ? feitas : []));
+    } catch {
+      /* histórico é acessório: a compra de hoje continua funcionando sem ele */
+    }
+  }
+
+  // Uma vez só: quem já usava o app tinha as marcações guardadas no próprio
+  // aparelho. Na virada para o servidor, aproveitamos o que estava lá para
+  // ninguém precisar marcar a lista inteira de novo.
+  async function migraMarcacoesAntigas(lst) {
+    const itens = lst.items;
+    let salvo;
+    try {
+      const raw = localStorage.getItem("bn_compras_me");
+      if (!raw) return itens;
+      salvo = JSON.parse(raw) || {};
+    } catch {
+      return itens;
+    }
+    const esquece = () => {
+      try {
+        localStorage.removeItem("bn_compras_me");
+      } catch {
+        /* ignora */
+      }
+    };
+    const marcados = new Set(salvo.bought || []);
+    const extrasAntigos = (salvo.extras || []).filter((n) => n && n.trim());
+
+    // Se a lista do servidor já tem movimento, ela é a verdade — não sobrescreve.
+    if (itens.some((i) => i.isChecked) || (!marcados.size && !extrasAntigos.length)) {
+      esquece();
+      return itens;
+    }
+
+    const marcar = itens
+      .filter((i) => marcados.has(i.name))
+      .map((i) => apiPatch(`/shopping-lists/items/${i.id}/check`, { isChecked: true }).catch(() => null));
+    const criar = extrasAntigos.map((name) =>
+      apiPost(`/shopping-lists/${lst.id}/items`, { name, category: CATEGORIA_EXTRA, quantity: 1, unit: "un" })
+        .then((c) => apiPatch(`/shopping-lists/items/${c.id}/check`, { isChecked: true }).then(() => ({ ...c, isChecked: true })))
+        .catch(() => null),
+    );
+    const [, criados] = await Promise.all([Promise.all(marcar), Promise.all(criar)]);
+    esquece();
+
+    return itens
+      .map((i) => (marcados.has(i.name) ? { ...i, isChecked: true } : i))
+      .concat(criados.filter(Boolean));
+  }
+
+  // Lista de compras: a fonte de verdade é o servidor, para que a nutricionista
+  // enxergue o que foi comprado. Só se essa API não estiver disponível (ex.: gate
+  // de assinatura) a tela cai no modo local, derivando do plano e guardando a
+  // marcação no próprio aparelho — como funcionava antes.
   useEffect(() => {
     let active = true;
     (async () => {
       try {
         const plans = await apiGet("/diet-plans");
-        if (Array.isArray(plans) && plans.length) {
-          const full = await apiGet(`/diet-plans/${plans[0].id}`);
-          const items =
-            Array.isArray(full.shoppingItems) && full.shoppingItems.length ? full.shoppingItems : ingredientsFromMeals(full.meals);
-          if (active) setShopping(categorizeShopping(items));
-        } else if (active) {
-          setShopping(null);
+        const plano = Array.isArray(plans) && plans.length ? plans[0] : null;
+        if (!plano) {
+          if (active) setItens(null);
+          return;
+        }
+
+        try {
+          const abertas = await apiGet("/shopping-lists?status=active&withItems=1");
+          let lst = Array.isArray(abertas) && abertas.length ? abertas[0] : null;
+          // Plano novo aprovado → gera lista nova (o backend arquiva a anterior).
+          if (!lst || (lst.dietPlanId && lst.dietPlanId !== plano.id)) {
+            const pid = await getProfileId();
+            lst = await apiPost("/shopping-lists/generate", { patientProfileId: pid });
+          }
+          if (lst && Array.isArray(lst.items)) {
+            const itensDoServidor = await migraMarcacoesAntigas(lst);
+            if (active) {
+              setLista(lst);
+              setItens(itensDoServidor);
+            }
+            carregaHistorico(active);
+            return;
+          }
+        } catch {
+          /* sem lista no servidor: segue para o modo local */
+        }
+
+        const full = await apiGet(`/diet-plans/${plano.id}`);
+        const nomes =
+          Array.isArray(full.shoppingItems) && full.shoppingItems.length ? full.shoppingItems : ingredientsFromMeals(full.meals);
+        if (active) {
+          setModoLocal(true);
+          setItens(restauraLocal(itensLocais(nomes)));
         }
       } catch {
-        if (active) setShopping(null);
+        if (active) setItens(null);
       }
     })();
     return () => {
@@ -188,15 +312,9 @@ export default function ComprasPage() {
       });
   }, [geo]);
 
-  // restaura compras + fase
+  // restaura a fase (o que foi comprado vem do servidor)
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("bn_compras_me");
-      if (raw) {
-        const d = JSON.parse(raw);
-        setBought(d.bought || []);
-        setExtras(d.extras || []);
-      }
       const ph = localStorage.getItem("bn_compras_phase");
       if (ph === "map" || ph === "list") setPhase(ph);
     } catch {
@@ -227,41 +345,92 @@ export default function ComprasPage() {
     }
     router.push("/app");
   }
-  function persist(b, e) {
+  // Marca/desmarca: atualiza na hora e grava no servidor. Se a gravação falhar,
+  // desfaz — melhor o item voltar a aparecer do que o paciente achar que
+  // registrou algo que a nutricionista nunca vai ver.
+  async function toggle(item) {
+    const alvo = !item.isChecked;
+    const aplica = (v) =>
+      setItens((prev) => {
+        const next = prev.map((i) => (i === item || (item.id && i.id === item.id) ? { ...i, isChecked: v } : i));
+        if (modoLocal) persisteLocal(next);
+        return next;
+      });
+
+    aplica(alvo);
+    if (modoLocal || !item.id) return;
     try {
-      localStorage.setItem("bn_compras_me", JSON.stringify({ bought: b, extras: e }));
+      await apiPatch(`/shopping-lists/items/${item.id}/check`, { isChecked: alvo });
     } catch {
-      /* ignora */
+      aplica(!alvo);
     }
   }
-  function toggle(item) {
-    setBought((prev) => {
-      const next = prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item];
-      persist(next, extras);
-      return next;
-    });
-  }
-  function addExtra() {
+
+  async function addExtra() {
     const v = newExtra.trim();
     if (!v) return;
-    setExtras((prev) => {
-      const next = [...prev, v];
-      persist(bought, next);
-      return next;
-    });
     setNewExtra("");
-  }
-  function removeExtra(i) {
-    setExtras((prev) => {
-      const next = prev.filter((_, j) => j !== i);
-      persist(bought, next);
-      return next;
-    });
+
+    if (modoLocal || !lista) {
+      setItens((prev) => {
+        const next = [...prev, { id: null, name: v, category: CATEGORIA_EXTRA, isChecked: true }];
+        persisteLocal(next);
+        return next;
+      });
+      return;
+    }
+    try {
+      // A categoria marca que foi o paciente que acrescentou — é assim que a
+      // nutricionista distingue isso do que veio do plano.
+      const criado = await apiPost(`/shopping-lists/${lista.id}/items`, {
+        name: v,
+        category: CATEGORIA_EXTRA,
+        quantity: 1,
+        unit: "un",
+      });
+      await apiPatch(`/shopping-lists/items/${criado.id}/check`, { isChecked: true });
+      setItens((prev) => [...prev, { ...criado, isChecked: true }]);
+    } catch {
+      setNewExtra(v);
+    }
   }
 
-  const allItems = useMemo(() => (Array.isArray(shopping) ? shopping.flatMap((g) => g.items) : []), [shopping]);
-  const total = allItems.length;
-  const boughtCount = allItems.filter((it) => bought.includes(it)).length;
+  async function removeExtra(item) {
+    setItens((prev) => {
+      const next = prev.filter((i) => i !== item);
+      if (modoLocal) persisteLocal(next);
+      return next;
+    });
+    if (modoLocal || !item.id) return;
+    try {
+      await apiDelete(`/shopping-lists/items/${item.id}`);
+    } catch {
+      setItens((prev) => [...prev, item]);
+    }
+  }
+
+  // Conclui: fecha a lista no servidor e registra onde a compra foi feita, para
+  // o histórico dela e para a nutricionista.
+  async function concluir() {
+    goPhase("done");
+    if (modoLocal || !lista) return;
+    try {
+      const onde =
+        market && typeof market === "object"
+          ? { name: market.name, address: market.address || null, lat: market.lat, lng: market.lon }
+          : null;
+      await apiPatch(`/shopping-lists/${lista.id}/status`, { status: "completed", market: onde });
+      carregaHistorico();
+    } catch {
+      /* a marcação dos itens já está salva; o status é secundário */
+    }
+  }
+
+  const shopping = useMemo(() => (Array.isArray(itens) ? categorizeShoppingItems(itens) : []), [itens]);
+  const extras = useMemo(() => (Array.isArray(itens) ? itens.filter((i) => i.category === CATEGORIA_EXTRA) : []), [itens]);
+  const doPlano = useMemo(() => (Array.isArray(itens) ? itens.filter((i) => i.category !== CATEGORIA_EXTRA) : []), [itens]);
+  const total = doPlano.length;
+  const boughtCount = doPlano.filter((i) => i.isChecked).length;
   const pct = total ? Math.round((boughtCount / total) * 100) : 0;
 
   const hasMarket = market && typeof market === "object";
@@ -315,7 +484,7 @@ export default function ComprasPage() {
   }
 
   // ---------- loading / sem plano ----------
-  if (shopping === undefined) {
+  if (itens === undefined) {
     return (
       <PatientShell active="compras" title="Lista de compras" subtitle="Carregando…">
         <Skeleton width="100%" height={110} radius="var(--radius-lg)" />
@@ -326,7 +495,7 @@ export default function ComprasPage() {
       </PatientShell>
     );
   }
-  if (shopping === null) {
+  if (itens === null) {
     return (
       <PatientShell active="compras" title="Lista de compras">
         <EmptyState
@@ -379,8 +548,8 @@ export default function ComprasPage() {
               </div>
               <div className={styles.tags}>
                 {g.items.map((it) => (
-                  <span key={it} className={styles.tag}>
-                    {it}
+                  <span key={it.id || it.name} className={styles.tag}>
+                    {it.name}
                   </span>
                 ))}
               </div>
@@ -428,6 +597,53 @@ export default function ComprasPage() {
           <button type="button" className={styles.startBtn} onClick={() => goPhase("map")}>
             Começar a comprar <Icon name="arrowRight" size={18} />
           </button>
+
+          {/* Histórico: só aparece depois da primeira compra concluída. */}
+          {historico.length > 0 && (
+            <>
+              <span className={`${styles.secLabel} ${styles.histLabel}`}>Compras anteriores</span>
+              <div className={styles.hist}>
+                {historico.map((h) => (
+                  <div key={h.id} className={styles.histCard}>
+                    <div className={styles.histTop}>
+                      <span className={styles.histIco}>
+                        <Icon name="cart" size={16} />
+                      </span>
+                      <span className={styles.histQuando}>
+                        <span className={styles.histData}>
+                          {h.dia}, {h.data}
+                          {h.hora ? ` · ${h.hora}` : ""}
+                        </span>
+                        <span className={styles.histLocal}>
+                          {h.mercado ? h.endereco ? `${h.mercado} — ${h.endereco}` : h.mercado : "Local não registrado"}
+                        </span>
+                      </span>
+                      <span className={styles.histTotal}>
+                        {h.comprados.length + h.extras.length} {h.comprados.length + h.extras.length === 1 ? "item" : "itens"}
+                      </span>
+                    </div>
+
+                    {h.comprados.length + h.extras.length > 0 ? (
+                      <div className={styles.histItens}>
+                        {h.comprados.map((n, i) => (
+                          <span key={`c${i}`} className={styles.tag}>
+                            {n}
+                          </span>
+                        ))}
+                        {h.extras.map((n, i) => (
+                          <span key={`e${i}`} className={`${styles.tag} ${styles.histExtra}`}>
+                            + {n}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className={styles.histVazio}>Nenhum item marcado nesta ida.</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -524,15 +740,17 @@ export default function ComprasPage() {
               <h4 className={styles.groupTitle}>
                 <Icon name={g.icon} size={16} /> {g.group}
               </h4>
-              {g.items.map((it) => {
-                const done = bought.includes(it);
-                return (
-                  <button key={it} type="button" className={`${styles.item} ${done ? styles.itemDone : ""}`} onClick={() => toggle(it)}>
-                    <span className={styles.check}>{done && <Icon name="check" size={13} strokeWidth={3} />}</span>
-                    <span className={styles.itemName}>{it}</span>
-                  </button>
-                );
-              })}
+              {g.items.map((it) => (
+                <button
+                  key={it.id || it.name}
+                  type="button"
+                  className={`${styles.item} ${it.isChecked ? styles.itemDone : ""}`}
+                  onClick={() => toggle(it)}
+                >
+                  <span className={styles.check}>{it.isChecked && <Icon name="check" size={13} strokeWidth={3} />}</span>
+                  <span className={styles.itemName}>{it.name}</span>
+                </button>
+              ))}
             </div>
           ))}
 
@@ -541,12 +759,12 @@ export default function ComprasPage() {
               <Icon name="plus" size={16} /> Comprei a mais
             </h4>
             {extras.map((e, i) => (
-              <div key={i} className={styles.item}>
+              <div key={e.id || `${e.name}-${i}`} className={styles.item}>
                 <span className={`${styles.check} ${styles.checkOn}`}>
                   <Icon name="check" size={13} strokeWidth={3} />
                 </span>
-                <span className={styles.itemName}>{e}</span>
-                <button type="button" className={styles.del} onClick={() => removeExtra(i)} aria-label="Remover">
+                <span className={styles.itemName}>{e.name}</span>
+                <button type="button" className={styles.del} onClick={() => removeExtra(e)} aria-label="Remover">
                   <Icon name="close" size={14} />
                 </button>
               </div>
@@ -567,7 +785,7 @@ export default function ComprasPage() {
             </div>
           </div>
 
-          <button type="button" className={styles.startBtn} onClick={() => goPhase("done")}>
+          <button type="button" className={styles.startBtn} onClick={concluir}>
             <Icon name="check" size={18} /> Concluir compras
           </button>
         </div>

@@ -758,3 +758,81 @@
     font-size: var(--fs-xs);
   }
 }
+
+/* ===== Histórico de compras ===== */
+/* Cada cartão é uma ida ao mercado: quando, onde e o que entrou no carrinho. */
+.hist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.histCard {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+}
+.histTop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.histIco {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.histQuando {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+.histData {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-high);
+}
+/* O endereço pode ser longo: corta em vez de empurrar o cartão. */
+.histLocal {
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.histTotal {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-overlay);
+  color: var(--text-medium);
+}
+.histItens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+.histExtra {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.histVazio {
+  margin-top: var(--space-3);
+  font-size: var(--fs-xs);
+  color: var(--text-low);
+}
+/* O histórico vem depois do botão de ação: precisa respirar longe dele. */
+.histLabel {
+  margin-top: var(--space-6);
+}

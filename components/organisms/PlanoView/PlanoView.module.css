@@ -1025,6 +1025,11 @@
   background: var(--danger-soft);
   color: var(--danger);
 }
+/* "comeu a mais": não é erro nem troca — informa, sem alarmar. */
+.eventAdd {
+  background: var(--info-soft);
+  color: var(--info);
+}
 .eventText {
   flex: 1;
   display: flex;
